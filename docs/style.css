@@ -92,6 +92,8 @@ canvas.cv { display: block; width: 100%; background: var(--panel); border-radius
 .log:empty::before { content: "Nothing yet"; color: var(--muted); }
 
 footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 22px; }
+footer .download { font-size: 14px; color: var(--fg); margin: 0 0 8px; }
+footer a { color: var(--blue); }
 
 /* settings dialog */
 dialog { background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 0;

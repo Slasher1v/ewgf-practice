@@ -3,8 +3,11 @@
 A free Tekken 8 **Electric Wind God Fist** trainer. Every input is judged on 60 fps game
 frames, the same way the game reads it, so a 3 ms gap can still miss if it crosses a frame line.
 
-**Play in your browser:** open the GitHub Pages link for this repo (Settings → Pages).
+**▶ Play in your browser: https://slasher1v.github.io/ewgf-practice/**
 Works with a keyboard or a controller - nothing to install.
+
+**⬇ Windows desktop version: [download the latest release](https://github.com/Slasher1v/ewgf-practice/releases/latest)**
+(unzip and run `EWGF Practice.exe` - it hears your keys even while Tekken is the active window).
 
 ## Three modes
 
