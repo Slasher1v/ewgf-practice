@@ -40,8 +40,6 @@ export const GUIDE_LOOP_MS = 1000;
 
 // Rhythm game
 export const RHYTHM_SPEED_ORDER = [8, 4, 2, 1];
-export const RHYTHM_LEVEL_UP = 5;
-export const RHYTHM_LEVEL_DOWN = 3;
 export const RHYTHM_PERFECT = 0.5;
 export const RHYTHM_HISTORY = 8;
 
@@ -88,6 +86,7 @@ export const DEFAULT_SETTINGS = {
   resultSounds: true,
   audioOffset: 0,
   variant: DEFAULT_VARIANT,
+  nerd: false,              // show ms breakdowns, logs and extra options
 };
 
 const STORE_KEY = "ewgf-practice-settings-v1";

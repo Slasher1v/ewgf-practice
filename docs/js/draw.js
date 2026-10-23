@@ -99,3 +99,17 @@ export class Painter {
     wrapped.forEach((l, i) => this.text(this.W / 2, mid + i * (size + 6), l, { color, size }));
   }
 }
+
+// Small stat tiles: [[label, value], ...]
+export function renderChips(el, items) {
+  el.replaceChildren(...items.map(([label, value]) => {
+    const d = document.createElement("div");
+    d.className = "chip";
+    const v = document.createElement("b");
+    v.textContent = value;
+    const l = document.createElement("span");
+    l.textContent = label;
+    d.append(v, l);
+    return d;
+  }));
+}

@@ -3,12 +3,11 @@
 // slow-down, but df and 2 are always judged on real game frames.
 
 import {
-  FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_LEVEL_UP,
-  RHYTHM_LEVEL_DOWN, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
-} from "./config.js";
-import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js";
-import { Painter } from "./draw.js";
-import * as audio from "./audio.js";
+  FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
+} from "./config.js?v=20261023194407";
+import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023194407";
+import { Painter, renderChips } from "./draw.js?v=20261023194407";
+import * as audio from "./audio.js?v=20261023194407";
 
 const $ = (id) => document.getElementById(id);
 const GRADE_COLORS = { PERFECT: C.GOLD, GREAT: C.GREEN, MISS: C.RED };
@@ -23,8 +22,6 @@ export class RhythmTab {
     this.held = new Set();
     this.history = [];
     this.stats = { reps: 0, perfect: 0, great: 0, miss: 0, combo: 0, bestCombo: 0 };
-    this.streak = 0;
-    this.missStreak = 0;
     this.realCombo = 0;      // combo counted only at Real speed (leaderboard)
     this.painter = new Painter($("r-grid"));
 
@@ -48,9 +45,8 @@ export class RhythmTab {
   updateStats() {
     const s = this.stats;
     const acc = s.reps ? `${Math.round((100 * (s.perfect + s.great)) / s.reps)}%` : "-";
-    const lvl = this.slow() !== RHYTHM_SPEED_ORDER[RHYTHM_SPEED_ORDER.length - 1]
-      ? `${this.streak}/${RHYTHM_LEVEL_UP} clean to speed up` : `streak ${this.streak}`;
-    $("r-stats").textContent = `${speedLabel(this.slow())}   ·   ${lvl}   ·   Combo ${s.combo} (best ${s.bestCombo})   ·   `
+    renderChips($("r-stats"), [["Combo", String(s.combo)], ["Best combo", String(s.bestCombo)], ["Hit rate", acc]]);
+    $("r-stats-full").textContent = `${speedLabel(this.slow())}   ·   Combo ${s.combo} (best ${s.bestCombo})   ·   `
       + `Perfect ${s.perfect}  Great ${s.great}  Miss ${s.miss}   ·   Hit rate ${acc}`;
   }
 
@@ -63,7 +59,7 @@ export class RhythmTab {
     $("r-start").textContent = "Stop";
     $("r-start").className = "btn gold right";
     this.setBig("Press →", C.BLUE);
-    this.setSub("Press → whenever you're ready - the rep starts on your f");
+    this.setSub("the rep starts on your f");
   }
 
   stop() {
@@ -146,36 +142,18 @@ export class RhythmTab {
     const s = this.stats;
     s.reps += 1;
     s[j.grade.toLowerCase()] += 1;
-    if (j.grade === "MISS") { s.combo = 0; this.streak = 0; this.missStreak += 1; }
-    else { s.combo += 1; s.bestCombo = Math.max(s.bestCombo, s.combo); this.streak += 1; this.missStreak = 0; }
+    if (j.grade === "MISS") s.combo = 0;
+    else { s.combo += 1; s.bestCombo = Math.max(s.bestCombo, s.combo); }
     if (j.grade !== "MISS" && rep.slow === 1) {
       this.realCombo += 1;
       this.app.report("rhythm_combo", this.realCombo);
     } else this.realCombo = 0;
 
-    let sound = { PERFECT: "electric", GREAT: "great", MISS: "drop" }[j.grade];
-    let note = "";
-    const order = RHYTHM_SPEED_ORDER;
-    const idx = Math.max(0, order.indexOf(rep.slow));
-    if ($("r-auto").checked && this.slow() === rep.slow) {
-      if (this.streak >= RHYTHM_LEVEL_UP && idx < order.length - 1) {
-        $("r-speed").value = order[idx + 1];
-        this.streak = 0;
-        note = `   ·   Speed up! Now ${speedLabel(order[idx + 1])}`;
-        sound = "electric_best";
-        this.updateTiming();
-      } else if (this.missStreak >= RHYTHM_LEVEL_DOWN && idx > 0) {
-        $("r-speed").value = order[idx - 1];
-        this.missStreak = 0;
-        this.streak = 0;
-        note = `   ·   Slowing down to ${speedLabel(order[idx - 1])}`;
-        this.updateTiming();
-      }
-    }
+    const sound = { PERFECT: "electric", GREAT: "great", MISS: "drop" }[j.grade];
     if (settings.resultSounds) audio.play(sound);
 
     this.setBig(j.grade, GRADE_COLORS[j.grade]);
-    this.setSub(j.reason + note, note ? GRADE_COLORS[j.grade] : C.MUTED);
+    this.setSub(j.reason);
     $("r-detail").textContent = RhythmTab.detailText(j);
     $("r-math").textContent = j.math ? j.math.join("\n") : "";
     this.updateStats();
@@ -214,8 +192,7 @@ export class RhythmTab {
     const rep = this.rep || this.prev;
     const p = this.painter.begin(C.PANEL);
     if (!rep) {
-      p.message(["Press Start, then press → whenever you like. You hear a beep on your f, the d tone,",
-        "then the Electric chime where df+2 should land. Each column is one real game frame."], C.MUTED);
+      p.message(["Press Start, then →"], C.MUTED);
       return;
     }
     const s = rep.slow;

@@ -5,7 +5,7 @@
 import {
   FRAME_MS, EWGF_BASE_STARTUP, MAX_NEUTRAL_FRAMES, MAX_DOWN_FRAMES, WGF_LATE_WINDOW,
   FAIL_LOG_WINDOW, RHYTHM_PERFECT, DF_BEAT_TOL_MS, settings,
-} from "./config.js";
+} from "./config.js?v=20261023194407";
 
 // ---------------------------------------------------------------------------
 // Frame sampler: raw key events -> one input state per frame

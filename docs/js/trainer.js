@@ -3,10 +3,10 @@
 import {
   FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, ARROWS, DIR_COLORS,
   VARIANTS, SPEEDS, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js";
-import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js";
-import { Painter } from "./draw.js";
-import * as audio from "./audio.js";
+} from "./config.js?v=20261023194407";
+import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023194407";
+import { Painter, renderChips } from "./draw.js?v=20261023194407";
+import * as audio from "./audio.js?v=20261023194407";
 
 const $ = (id) => document.getElementById(id);
 
@@ -52,7 +52,6 @@ export class TrainerTab {
     speed.onchange = () => { if (this.guideOn) this.startGuide(); };
 
     $("t-guide").onclick = () => (this.guideOn ? this.stopGuide() : this.startGuide());
-    $("t-go-rhythm").onclick = () => app.selectTab("rhythm");
     $("t-reset").onclick = () => this.reset();
     this.updateStats();
   }
@@ -75,19 +74,20 @@ export class TrainerTab {
     $("t-title").textContent = resultTitle(r);
     $("t-title").style.color = color;
     let sub;
-    if (r.electric) sub = r.movement <= 4 ? "Clean execution" : r.movement <= 6 ? "Electric, but slow movement" : "Electric, very slow movement";
+    if (r.electric) sub = r.movement <= 4 ? "Clean" : r.movement <= 6 ? "A bit slow" : "Slow";
     else sub = r.reason;
-    if (r.shortcut) sub += "   (f, n, df shortcut)";
+    let more = r.shortcut ? "f, n, df shortcut" : "";
     const target = targetSpeed(variantById(settings.variant).events);
     if (r.electric) {
       const delta = r.speed - target;
-      sub += `   ·   target i${target}: ` + (delta === 0 ? "on target"
+      more += (more ? "   ·   " : "") + `target i${target}: ` + (delta === 0 ? "on target"
         : `${Math.abs(delta)} frame${Math.abs(delta) > 1 ? "s" : ""} ${delta > 0 ? "slower" : "faster"}`);
     }
     if (r.kind !== "electric" && r.raw.jf !== null && r.jf !== null && r.jf !== 0 && Math.abs(r.raw.jf) < FRAME_MS) {
-      sub += `\nOnly ${Math.abs(r.raw.jf).toFixed(1)} ms apart, but on different frames`;
+      more += (more ? "   ·   " : "") + `only ${Math.abs(r.raw.jf).toFixed(1)} ms apart, but on different frames`;
     }
     $("t-sub").textContent = sub;
+    $("t-more").textContent = more;
 
     const put = (key, ms, fr, fg = C.FG) => {
       $(`b-${key}-ms`).textContent = ms;
@@ -150,7 +150,9 @@ export class TrainerTab {
   }
 
   updateStats() {
-    const el = $("t-stats");
+    const el = $("t-stats-full");
+    const rateTxt = this.total ? `${Math.round((100 * this.electrics) / this.total)}%` : "-";
+    renderChips($("t-stats"), [["Electric", rateTxt], ["Streak", String(this.streak)], ["Best", this.best ? `i${this.best}` : "-"]]);
     if (this.total === 0) { el.textContent = "Attempts 0   ·   Electric -   ·   Streak 0   ·   Avg -   ·   Best -"; return; }
     const rate = (100 * this.electrics) / this.total;
     const avg = this.electrics ? `i${(this.speedSum / this.electrics).toFixed(1)}` : "-";
@@ -169,7 +171,8 @@ export class TrainerTab {
     this.last = null;
     $("t-title").textContent = "Ready";
     $("t-title").style.color = C.FG;
-    $("t-sub").textContent = "Do the EWGF: f, n, d, df+2";
+    $("t-sub").textContent = "f, n, d, df+2";
+    $("t-more").textContent = "";
     for (const k of ["f", "n", "d", "mv", "jf"]) {
       for (const s of ["ms", "fr"]) { $(`b-${k}-${s}`).textContent = "-"; $(`b-${k}-${s}`).style.color = C.FG; }
     }
@@ -199,8 +202,7 @@ export class TrainerTab {
     const p = this.painter.begin(C.PANEL);
     const r = this.last;
     if (!r || !r.frames.length) {
-      p.message(["Your inputs show up here, one column per game frame.",
-        "Bars = what you held, dots = the exact moment you pressed, bottom row = what the game read."], C.MUTED);
+      p.message(["Your inputs show up here"], C.MUTED);
       return;
     }
     const frames = r.frames;

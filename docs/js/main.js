@@ -1,12 +1,12 @@
 // Wires the three tabs, settings, sound and the main loop together.
 
-import { FRAME_MS, settings, saveSettings, resetSettings, keyName, padName, ATTACKS } from "./config.js";
-import * as audio from "./audio.js";
-import * as input from "./input.js";
-import { TrainerTab } from "./trainer.js";
-import { RhythmTab } from "./rhythm.js";
-import { DFTab } from "./dfgame.js";
-import * as lb from "./leaderboard.js";
+import { FRAME_MS, settings, saveSettings, resetSettings, keyName, padName, ATTACKS } from "./config.js?v=20261023194407";
+import * as audio from "./audio.js?v=20261023194407";
+import * as input from "./input.js?v=20261023194407";
+import { TrainerTab } from "./trainer.js?v=20261023194407";
+import { RhythmTab } from "./rhythm.js?v=20261023194407";
+import { DFTab } from "./dfgame.js?v=20261023194407";
+import * as lb from "./leaderboard.js?v=20261023194407";
 
 const $ = (id) => document.getElementById(id);
 
@@ -143,9 +143,9 @@ function buildBindings() {
 function syncSettingsUI() {
   $("s-side").checked = settings.sideSwap;
   $("s-socd").value = settings.socdH;
-  for (const id of ["s-volume", "t-volume"]) $(id).value = settings.volume;
-  for (const id of ["s-tones", "t-tones"]) $(id).checked = settings.inputTones;
-  for (const id of ["s-results", "t-results"]) $(id).checked = settings.resultSounds;
+  $("s-volume").value = settings.volume;
+  $("s-tones").checked = settings.inputTones;
+  $("s-results").checked = settings.resultSounds;
   $("s-offset").value = settings.audioOffset;
 }
 
@@ -153,11 +153,9 @@ $("open-settings").onclick = () => { buildBindings(); syncSettingsUI(); $("setti
 $("settings").addEventListener("close", () => { input.cancelCapture(); saveSettings(); });
 $("s-side").onchange = (e) => { input.releaseAll(); settings.sideSwap = e.target.checked; saveSettings(); refreshKeyHint(); };
 $("s-socd").onchange = (e) => { settings.socdH = settings.socdV = e.target.value; saveSettings(); };
-for (const id of ["s-volume", "t-volume"]) {
-  $(id).oninput = (e) => { audio.setVolume(Number(e.target.value)); saveSettings(); syncSettingsUI(); };
-}
-for (const id of ["s-tones", "t-tones"]) $(id).onchange = (e) => { settings.inputTones = e.target.checked; saveSettings(); syncSettingsUI(); };
-for (const id of ["s-results", "t-results"]) $(id).onchange = (e) => { settings.resultSounds = e.target.checked; saveSettings(); syncSettingsUI(); };
+$("s-volume").oninput = (e) => { audio.setVolume(Number(e.target.value)); saveSettings(); };
+$("s-tones").onchange = (e) => { settings.inputTones = e.target.checked; saveSettings(); };
+$("s-results").onchange = (e) => { settings.resultSounds = e.target.checked; saveSettings(); };
 $("s-offset").onchange = (e) => {
   const v = parseInt(e.target.value, 10);
   settings.audioOffset = Number.isFinite(v) ? Math.max(-100, Math.min(300, v)) : 0;
@@ -168,6 +166,14 @@ $("s-reset").onclick = () => { resetSettings(); audio.setVolume(settings.volume)
 
 syncSettingsUI();
 refreshKeyHint();
+
+// Nerd mode: ms breakdowns, logs and extra options
+function applyNerd() {
+  document.body.classList.toggle("nerd-on", settings.nerd);
+  $("nerd-toggle").setAttribute("aria-pressed", String(settings.nerd));
+}
+$("nerd-toggle").onclick = () => { settings.nerd = !settings.nerd; saveSettings(); applyNerd(); };
+applyNerd();
 
 // ---------------------------------------------------------------------------
 // Leaderboard tab
@@ -247,7 +253,7 @@ const board = {
     if (u) {
       $("lb-name").textContent = u.username;
       const bests = lb.BOARDS.filter((b) => lb.myBest(b.id) !== null).map((b) => `${b.title} ${b.fmt(lb.myBest(b.id))}`);
-      $("lb-mybests").textContent = bests.length ? `Your bests: ${bests.join(" · ")}` : "No scores yet - go practice!";
+      $("lb-mybests").textContent = bests.length ? bests.join(" · ") : "No scores yet";
     }
     // a new personal best may have changed the table
     if (current === "board" && Date.now() - this.loadedAt > 2000) this.load();
@@ -284,7 +290,7 @@ const board = {
         const tr = document.createElement("tr");
         if (me && r.userId === me.id) tr.classList.add("me");
         if (i === 0) tr.classList.add("top1");
-        tr.append(cell(String(i + 1)), cell(r.username), cell(`${b.fmt(r.value)} ${b.unit}`), cell(fmtWhen(r.at)));
+        tr.append(cell(String(i + 1)), cell(r.username), cell(`${b.fmt(r.value)} ${b.unit}`), cell(fmtWhen(r.at), "nerd-cell"));
         return tr;
       }));
     } catch (e) {

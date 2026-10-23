@@ -4,10 +4,10 @@
 import {
   FRAME_MS, C, DF_START_LEVEL, DF_LEVEL_DOWN, DF_RANGE_AFTER_MS, DF_COUNT_IN, DF_REST_MS,
   DF_GAPS, DF_HISTORY, settings, keyName,
-} from "./config.js";
-import { judgeDfRep } from "./engine.js";
-import { Painter } from "./draw.js";
-import * as audio from "./audio.js";
+} from "./config.js?v=20261023194407";
+import { judgeDfRep } from "./engine.js?v=20261023194407";
+import { Painter, renderChips } from "./draw.js?v=20261023194407";
+import * as audio from "./audio.js?v=20261023194407";
 
 const $ = (id) => document.getElementById(id);
 const clock = () => new Date().toTimeString().slice(0, 8);
@@ -57,7 +57,8 @@ export class DFTab {
     const rate = s.reps ? `${Math.round((100 * s.hits) / s.reps)}%` : "-";
     const best = this.bestLevel <= 40 ? String(this.bestLevel) : "-";
     const need = num("d-hits", 1, 1, 10);
-    $("d-stats").textContent = `Level ${this.level}  (1 frame = ${this.level} frames, ${Math.round(this.level * FRAME_MS)} ms)   ·   `
+    renderChips($("d-stats"), [["Level", String(this.level)], ["Streak", String(s.streak)], ["Hit rate", rate]]);
+    $("d-stats-full").textContent = `Level ${this.level}  (1 frame = ${this.level} frames, ${Math.round(this.level * FRAME_MS)} ms)   ·   `
       + `${this.hitsAtLevel}/${need} to next   ·   Best cleared ${best}   ·   `
       + `Hits ${s.hits}/${s.reps} (${rate})   ·   Streak ${s.streak} (best ${s.bestStreak})`;
   }
@@ -247,8 +248,7 @@ export class DFTab {
   drawGrid(rep, now) {
     const p = this.painter.begin(C.PANEL);
     if (!rep) {
-      p.message(["Press Start. Clicks, then the f tone, then hit df+2 on the next tone.",
-        "Blocks are stretched frames; thin lines are real game frames."], C.MUTED);
+      p.message(["Press Start"], C.MUTED);
       return;
     }
     const s = rep.level, gap = rep.gap;

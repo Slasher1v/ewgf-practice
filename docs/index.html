@@ -12,18 +12,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261023194407">
   <meta name="theme-color" content="#09090b">
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=20261023194407"></script>
 </head>
 <body>
+  <div class="glow" aria-hidden="true"></div>
   <header class="top">
     <div class="brand">
-      <img src="icon.png" alt="" width="28" height="28">
-      <div>
-        <h1>EWGF Practice</h1>
-        <p>Tekken 8 Electric trainer, judged on 60 fps game frames</p>
-      </div>
+      <img src="icon.png" alt="" width="30" height="30">
+      <h1>EWGF Practice</h1>
     </div>
     <div class="top-right">
       <span id="keyhint" class="keyhint"></span>
@@ -32,153 +30,138 @@
     </div>
   </header>
 
-  <div id="banner-sound" class="banner">Click anywhere or press a key to turn on sound</div>
-  <div id="banner-focus" class="banner warn" hidden>The page can't hear your keys right now - click here to keep practicing</div>
+  <div id="banner-sound" class="banner">Click or press a key to turn on sound</div>
+  <div id="banner-focus" class="banner warn" hidden>Click here - the page can't hear your keys right now</div>
   <div id="banner-mobile" class="banner" hidden>This trainer needs a keyboard or a controller.</div>
 
   <nav class="tabs" role="tablist">
-    <button class="tab active" data-tab="trainer" role="tab">EWGF Trainer</button>
-    <button class="tab" data-tab="rhythm" role="tab">Rhythm Game</button>
-    <button class="tab" data-tab="df" role="tab">df+2 Trainer</button>
+    <button class="tab active" data-tab="trainer" role="tab">Trainer</button>
+    <button class="tab" data-tab="rhythm" role="tab">Rhythm</button>
+    <button class="tab" data-tab="df" role="tab">df+2</button>
     <button class="tab" data-tab="board" role="tab">Leaderboard</button>
   </nav>
 
   <main>
     <!-- ===================== EWGF TRAINER ===================== -->
     <section id="tab-trainer" class="tabpage">
-      <div class="hero">
+      <div class="stage">
         <div id="t-title" class="big">Ready</div>
-        <div id="t-sub" class="sub">Do the EWGF: f, n, d, df+2</div>
+        <div id="t-sub" class="sub">f, n, d, df+2</div>
+        <div id="t-more" class="detail nerd"></div>
+        <div id="lamps" class="lamps">
+          <span data-btn="b">←</span><span data-btn="d">↓</span><span data-btn="u">↑</span><span data-btn="f">→</span>
+          <span data-btn="1">1</span><span data-btn="2">2</span><span data-btn="3">3</span><span data-btn="4">4</span>
+        </div>
       </div>
-      <div id="lamps" class="lamps">
-        <span data-btn="b">←</span><span data-btn="d">↓</span><span data-btn="u">↑</span><span data-btn="f">→</span>
-        <span data-btn="1">1</span><span data-btn="2">2</span><span data-btn="3">3</span><span data-btn="4">4</span>
-      </div>
+      <div id="t-stats" class="chips"></div>
 
-      <div class="label">Input history <span>1 column = 1 game frame · circles = your goal</span></div>
       <canvas id="t-hist" class="cv" style="height:206px"></canvas>
 
-      <table class="breakdown">
-        <thead><tr><th>Segment</th><th>raw ms</th><th>game frames</th></tr></thead>
-        <tbody>
-          <tr><td>f hold</td><td id="b-f-ms">-</td><td id="b-f-fr">-</td></tr>
-          <tr><td>n neutral</td><td id="b-n-ms">-</td><td id="b-n-fr">-</td></tr>
-          <tr><td>d hold</td><td id="b-d-ms">-</td><td id="b-d-fr">-</td></tr>
-          <tr class="strong"><td>Movement total</td><td id="b-mv-ms">-</td><td id="b-mv-fr">-</td></tr>
-          <tr class="strong"><td>Just frame (df → 2)</td><td id="b-jf-ms">-</td><td id="b-jf-fr">-</td></tr>
-        </tbody>
-      </table>
+      <div class="nerd">
+        <table class="breakdown">
+          <thead><tr><th>Segment</th><th>raw ms</th><th>game frames</th></tr></thead>
+          <tbody>
+            <tr><td>f hold</td><td id="b-f-ms">-</td><td id="b-f-fr">-</td></tr>
+            <tr><td>n neutral</td><td id="b-n-ms">-</td><td id="b-n-fr">-</td></tr>
+            <tr><td>d hold</td><td id="b-d-ms">-</td><td id="b-d-fr">-</td></tr>
+            <tr class="strong"><td>Movement total</td><td id="b-mv-ms">-</td><td id="b-mv-fr">-</td></tr>
+            <tr class="strong"><td>Just frame (df → 2)</td><td id="b-jf-ms">-</td><td id="b-jf-fr">-</td></tr>
+          </tbody>
+        </table>
+        <div id="t-stats-full" class="stats"></div>
+        <div class="label">Last 10 attempts</div>
+        <ol id="t-log" class="log"></ol>
+      </div>
 
-      <div id="t-stats" class="stats"></div>
-      <div class="label">Last 10 attempts</div>
-      <ol id="t-log" class="log"></ol>
-
-      <div class="label">Audio trainer</div>
-      <div class="panel">
-        <div class="row">
-          <label>Target <select id="t-variant"></select></label>
-          <label><select id="t-speed"></select></label>
-          <button id="t-guide" class="btn primary">Play rhythm</button>
-        </div>
-        <div class="row">
-          <button id="t-go-rhythm" class="btn ghost">Go to Rhythm Game</button>
-          <span class="muted small">Reps start on your f - slowed down or real speed</span>
-        </div>
-        <div class="row">
-          <label class="check"><input type="checkbox" id="t-tones"> Input tones</label>
-          <label class="check"><input type="checkbox" id="t-results"> Result sounds</label>
-          <label class="vol">Volume <input type="range" id="t-volume" min="0" max="100"></label>
-          <button id="t-reset" class="btn ghost right">Reset stats</button>
-        </div>
+      <div class="toolbar">
+        <select id="t-variant" aria-label="Target"></select>
+        <select id="t-speed" aria-label="Speed"></select>
+        <button id="t-guide" class="btn primary">Play rhythm</button>
+        <button id="t-reset" class="btn ghost right">Reset</button>
       </div>
     </section>
 
     <!-- ===================== RHYTHM GAME ===================== -->
     <section id="tab-rhythm" class="tabpage" hidden>
-      <div class="panel">
-        <div class="row">
-          <label>Target <select id="r-variant"></select></label>
-          <label>Speed <select id="r-speed"></select></label>
-          <button id="r-start" class="btn primary right">Start</button>
-        </div>
-        <div class="row">
-          <label class="check"><input type="checkbox" id="r-dtone" checked> d tone</label>
-          <label class="check"><input type="checkbox" id="r-auto" checked> Auto speed-up</label>
-          <span class="muted small right" id="r-latency"></span>
-        </div>
+      <div class="toolbar">
+        <select id="r-variant" aria-label="Target"></select>
+        <select id="r-speed" aria-label="Speed"></select>
+        <label class="check nerd-inline"><input type="checkbox" id="r-dtone" checked> d tone</label>
+        <button id="r-start" class="btn primary right">Start</button>
       </div>
-      <div class="label">Timing at this speed <span>game frames from your f</span></div>
-      <div id="r-timing" class="mono timing"></div>
-
-      <div class="hero">
+      <div class="stage">
         <div id="r-big" class="big">Press Start</div>
-        <div id="r-sub" class="sub">Then press → whenever you're ready</div>
-        <div id="r-detail" class="detail"></div>
-        <div id="r-math" class="mathline"></div>
+        <div id="r-sub" class="sub">then press → when you're ready</div>
+        <div id="r-detail" class="detail nerd"></div>
+        <div id="r-math" class="mathline nerd"></div>
       </div>
+      <div id="r-stats" class="chips"></div>
       <canvas id="r-grid" class="cv" style="height:236px"></canvas>
-      <div id="r-stats" class="stats"></div>
-      <ol id="r-log" class="log"></ol>
+      <div class="nerd">
+        <div class="label">Timing at this speed <span>game frames from your f</span></div>
+        <div id="r-timing" class="mono timing"></div>
+        <div id="r-stats-full" class="stats"></div>
+        <div id="r-latency" class="stats"></div>
+        <ol id="r-log" class="log"></ol>
+      </div>
     </section>
 
     <!-- ===================== DF+2 TRAINER ===================== -->
     <section id="tab-df" class="tabpage" hidden>
-      <div class="panel">
-        <div class="row">
-          <label>Cue gap <select id="d-gap"></select></label>
-          <label>Start level <input type="number" id="d-level" min="1" max="20" value="10"></label>
-          <button id="d-start" class="btn primary right">Start</button>
-        </div>
-        <div class="row">
-          <label>BPM <input type="number" id="d-bpm" min="60" max="200" step="5" value="100"></label>
-          <label>Hits per level <input type="number" id="d-hits" min="1" max="10" value="1"></label>
-          <label class="check"><input type="checkbox" id="d-strict"> Must hit the cue</label>
-        </div>
+      <div class="toolbar">
+        <select id="d-gap" aria-label="Cue gap"></select>
+        <label>Start level <input type="number" id="d-level" min="1" max="20" value="10"></label>
+        <button id="d-start" class="btn primary right">Start</button>
       </div>
-      <p id="d-help" class="help"></p>
-      <canvas id="d-ladder" class="cv" style="height:60px;background:transparent"></canvas>
-      <div class="hero">
+      <div class="toolbar nerd">
+        <label>BPM <input type="number" id="d-bpm" min="60" max="200" step="5" value="100"></label>
+        <label>Hits per level <input type="number" id="d-hits" min="1" max="10" value="1"></label>
+        <label class="check"><input type="checkbox" id="d-strict"> Must hit the cue</label>
+      </div>
+      <canvas id="d-ladder" class="cv ladder" style="height:56px"></canvas>
+      <div class="stage">
         <div id="d-big" class="big">Press Start</div>
-        <div id="d-sub" class="sub"></div>
-        <div id="d-detail" class="detail"></div>
-        <div id="d-math" class="mathline"></div>
+        <div id="d-sub" class="sub">hold ↓, then hit → and 2 together on the second tone</div>
+        <div id="d-detail" class="detail nerd"></div>
+        <div id="d-math" class="mathline nerd"></div>
       </div>
+      <div id="d-stats" class="chips"></div>
       <canvas id="d-grid" class="cv" style="height:200px"></canvas>
-      <div id="d-stats" class="stats"></div>
-      <ol id="d-log" class="log"></ol>
+      <div class="nerd">
+        <p id="d-help" class="help"></p>
+        <div id="d-stats-full" class="stats"></div>
+        <ol id="d-log" class="log"></ol>
+      </div>
     </section>
 
     <!-- ===================== LEADERBOARD ===================== -->
     <section id="tab-board" class="tabpage" hidden>
       <div id="lb-off" class="panel center" hidden>
-        <p><b>The leaderboard isn't switched on yet.</b></p>
-        <p class="muted small">Everything else works as normal - your practice stays in this browser.</p>
+        <p>The leaderboard isn't switched on yet.</p>
       </div>
 
       <div id="lb-on" hidden>
         <div class="panel" id="lb-account">
           <form id="lb-form" class="row" autocomplete="on" hidden>
-            <label>Username <input type="text" id="lb-user" class="text" maxlength="16" autocomplete="username"
-              spellcheck="false" autocapitalize="off"></label>
-            <label>Password <input type="password" id="lb-pass" class="text" autocomplete="current-password"></label>
+            <input type="text" id="lb-user" class="text" maxlength="16" autocomplete="username" placeholder="Username"
+              spellcheck="false" autocapitalize="off" aria-label="Username">
+            <input type="password" id="lb-pass" class="text" autocomplete="current-password" placeholder="Password" aria-label="Password">
             <button type="submit" id="lb-signin" class="btn primary">Sign in</button>
             <button type="button" id="lb-signup" class="btn ghost">Create account</button>
           </form>
           <div id="lb-me" class="row" hidden>
             <span>Signed in as <b id="lb-name"></b></span>
-            <span id="lb-mybests" class="muted small"></span>
+            <span id="lb-mybests" class="muted small nerd-inline"></span>
             <button type="button" id="lb-signout" class="btn ghost right">Sign out</button>
           </div>
           <p id="lb-msg" class="small lb-msg"></p>
-          <p id="lb-hint" class="muted small">Sign in and your best runs are saved here automatically.
-            No email needed - just pick a username and password. While you type here your game keys
-            are paused; click outside the box to practice again.</p>
+          <p id="lb-hint" class="muted small">No email needed. Your best runs save automatically.</p>
         </div>
 
         <div id="lb-boards" class="seg"></div>
         <p id="lb-how" class="help"></p>
         <table class="board">
-          <thead><tr><th>#</th><th>Player</th><th>Score</th><th>When</th></tr></thead>
+          <thead><tr><th>#</th><th>Player</th><th>Score</th><th class="nerd-cell">When</th></tr></thead>
           <tbody id="lb-rows"></tbody>
         </table>
         <div class="row end"><button type="button" id="lb-refresh" class="btn ghost">Refresh</button></div>
@@ -187,11 +170,14 @@
   </main>
 
   <footer>
-    <p class="download">Want it running next to the game? <a href="https://github.com/Slasher1v/ewgf-practice/releases/latest">Download the Windows desktop version</a>
-      - it hears your keys even while Tekken is the active window.</p>
-    Runs entirely in your browser - nothing is uploaded unless you sign in to the leaderboard. Timing windows for the motion are estimates;
-    the df+2 just frame is exact. Not affiliated with Bandai Namco.
+    <a href="https://github.com/Slasher1v/ewgf-practice/releases/latest">Windows app</a> · Not affiliated with Bandai Namco
+    <p class="nerd">The Windows app hears your keys even while Tekken is the active window. Motion timing windows are
+      estimates; the df+2 just frame is exact. Nothing is uploaded unless you sign in to the leaderboard.</p>
   </footer>
+
+  <button id="nerd-toggle" class="nerd-toggle" type="button" aria-pressed="false">
+    <span class="switch" aria-hidden="true"></span> Nerd mode
+  </button>
 
   <!-- ===================== SETTINGS ===================== -->
   <dialog id="settings">

@@ -2,7 +2,7 @@
 // player's best score per board. Everything here is optional: if Supabase
 // isn't configured or can't be reached, the trainer works as before.
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./supabase-config.js";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./supabase-config.js?v=20261023194407";
 
 const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 
@@ -15,16 +15,16 @@ export const USERNAME_RE = /^[A-Za-z0-9_]{3,16}$/;
 export const MIN_PASSWORD = 6;
 
 export const BOARDS = [
-  { id: "i13_count", tab: "EWGF Trainer", title: "13-frame Electrics", unit: "total", counter: true,
-    how: "Total i13 Electrics (the fastest possible, 13 frames) landed in the EWGF Trainer. Keeps adding up.", fmt: (v) => `${v}` },
-  { id: "ewgf_streak", tab: "EWGF Trainer", title: "Electric streak", unit: "in a row",
-    how: "Most Electrics in a row in the EWGF Trainer tab.", fmt: (v) => `${v}` },
-  { id: "ewgf_rate50", tab: "EWGF Trainer", title: "Electric rate", unit: "of 50",
-    how: "Best Electric rate over any 50 attempts in a row in the EWGF Trainer tab.", fmt: (v) => `${v * 2}%` },
-  { id: "rhythm_combo", tab: "Rhythm Game", title: "Real-speed combo", unit: "combo",
-    how: "Longest combo in the Rhythm Game at Real speed.", fmt: (v) => `${v}` },
-  { id: "df_streak", tab: "df+2 Trainer", title: "Just-frame streak", unit: "in a row",
-    how: "Most df+2 hits in a row at level 1 (real game speed) in the df+2 Trainer.", fmt: (v) => `${v}` },
+  { id: "i13_count", tab: "Trainer", title: "i13 Electrics", unit: "total", counter: true,
+    how: "Total i13 Electrics landed. Keeps adding up.", fmt: (v) => `${v}` },
+  { id: "ewgf_streak", tab: "Trainer", title: "Electric streak", unit: "in a row",
+    how: "Most Electrics in a row.", fmt: (v) => `${v}` },
+  { id: "ewgf_rate50", tab: "Trainer", title: "Electric rate", unit: "of 50",
+    how: "Best Electric rate over 50 attempts.", fmt: (v) => `${v * 2}%` },
+  { id: "rhythm_combo", tab: "Rhythm", title: "Real-speed combo", unit: "combo",
+    how: "Longest Rhythm combo at real speed.", fmt: (v) => `${v}` },
+  { id: "df_streak", tab: "df+2", title: "Just-frame streak", unit: "in a row",
+    how: "Most df+2 hits in a row at level 1.", fmt: (v) => `${v}` },
 ];
 export const boardById = (id) => BOARDS.find((b) => b.id === id);
 
