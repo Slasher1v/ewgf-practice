@@ -47,7 +47,7 @@ export class DFTab {
     const fwd = settings.sideSwap ? k.b : k.f;
     $("d-help").textContent = `Clicks count you in, the f plays by itself, then press df+2 on the second tone: `
       + `hold ↓ (${keyName(k.d)}) first, then hit → (${keyName(fwd)}) + 2 (${keyName(k[2])}). `
-      + `↓ must go down before →. Anywhere in the green range counts as long as f and 2 share a frame.`;
+      + `↓ must go down before →. Anywhere in the purple range counts as long as f and 2 share a frame.`;
   }
 
   startLevel() { return num("d-level", DF_START_LEVEL, 1, 20); }
@@ -72,7 +72,7 @@ export class DFTab {
     this.hitsAtLevel = this.missStreak = this.realStreak = 0;
     this.running = true;
     this.prev = null;
-    $("d-start").textContent = "■ Stop";
+    $("d-start").textContent = "Stop";
     $("d-start").className = "btn gold right";
     this.updateStats();
     this.scheduleRep(performance.now() + 400);
@@ -83,7 +83,7 @@ export class DFTab {
     this.running = false;
     this.rep = null;
     audio.cancelScheduled();
-    $("d-start").textContent = "▶ Start";
+    $("d-start").textContent = "Start";
     $("d-start").className = "btn primary right";
     this.setBig("Paused", C.FG);
   }

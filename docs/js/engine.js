@@ -358,7 +358,7 @@ export function judgeDfRep(rep) {
     return J(false, why, idx(rep.t_f), rep.t_2 === null ? null : idx(rep.t_2), rep.t_f - rep.T_hit,
       rep.t_2 === null ? null : rep.t_2 - rep.t_f);
   }
-  if (rep.t_df === null && rep.t_2 === null) return J(false, "No df+2 inside the green range", null, null, null, null);
+  if (rep.t_df === null && rep.t_2 === null) return J(false, "No df+2 inside the purple range", null, null, null, null);
   if (rep.t_df === null) return J(false, "Pressed 2 but never made df", null, idx(rep.t_2), null, null);
   const kdf = idx(rep.t_df);
   const cueMs = rep.t_df - rep.T_hit;

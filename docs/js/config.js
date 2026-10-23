@@ -60,12 +60,14 @@ export const DF_HISTORY = 8;
 
 export const ATTACKS = ["1", "2", "3", "4"];
 
-// Colours (match the desktop app)
+// Colours: black / white / purple. The names are roles, not literal colours:
+// GOLD = best result & highlights, GREEN = clean / df, YELLOW = okay,
+// ORANGE = slow, RED = miss, BLUE = forward lane, PURPLE = down lane.
 export const C = {
-  BG: "#121418", PANEL: "#1b1e24", CELL: "#2a2e36", LINE: "#30343c", DIV: "#3a3f48",
-  FG: "#e6e6e6", MUTED: "#8a8f98", INK: "#0b0d10",
-  GOLD: "#ffd24a", GREEN: "#3ddc84", YELLOW: "#f5e15b", ORANGE: "#ff9f43",
-  RED: "#ff4d5e", BLUE: "#4aa8ff", PURPLE: "#a78bfa",
+  BG: "#09090b", PANEL: "#111114", CELL: "#1a1a1f", LINE: "#26262d", DIV: "#2f2f37",
+  FG: "#fafafa", MUTED: "#8b8b97", INK: "#09090b",
+  GOLD: "#c4b5fd", GREEN: "#a78bfa", YELLOW: "#e9e4fb", ORANGE: "#a39fb3",
+  RED: "#f472b6", BLUE: "#fafafa", PURPLE: "#7c6bb5",
 };
 export const ARROWS = { n: "•", f: "→", b: "←", d: "↓", u: "↑", df: "↘", db: "↙", uf: "↗", ub: "↖" };
 export const DIR_COLORS = { f: C.BLUE, n: C.CELL, d: C.PURPLE, df: C.GREEN };

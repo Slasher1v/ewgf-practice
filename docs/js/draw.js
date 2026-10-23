@@ -1,7 +1,7 @@
 // Tiny canvas helper: crisp on high-DPI screens, coordinates in CSS pixels.
 
-const FONT = '"Segoe UI", system-ui, -apple-system, sans-serif';
-const MONO = 'Consolas, "SF Mono", Menlo, monospace';
+const FONT = '"Inter", system-ui, -apple-system, "Segoe UI", sans-serif';
+const MONO = '"JetBrains Mono", ui-monospace, Consolas, Menlo, monospace';
 
 export class Painter {
   constructor(canvas) {
@@ -70,7 +70,7 @@ export class Painter {
     c.fill();
   }
 
-  text(x, y, str, { color = "#e6e6e6", size = 11, bold = false, italic = false, mono = false,
+  text(x, y, str, { color = "#fafafa", size = 11, bold = false, italic = false, mono = false,
     align = "center", base = "middle" } = {}) {
     const c = this.ctx;
     c.font = `${italic ? "italic " : ""}${bold ? "700 " : ""}${size}px ${mono ? MONO : FONT}`;

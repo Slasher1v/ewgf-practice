@@ -15,6 +15,8 @@ export const USERNAME_RE = /^[A-Za-z0-9_]{3,16}$/;
 export const MIN_PASSWORD = 6;
 
 export const BOARDS = [
+  { id: "i13_count", tab: "EWGF Trainer", title: "13-frame Electrics", unit: "total", counter: true,
+    how: "Total i13 Electrics (the fastest possible, 13 frames) landed in the EWGF Trainer. Keeps adding up.", fmt: (v) => `${v}` },
   { id: "ewgf_streak", tab: "EWGF Trainer", title: "Electric streak", unit: "in a row",
     how: "Most Electrics in a row in the EWGF Trainer tab.", fmt: (v) => `${v}` },
   { id: "ewgf_rate50", tab: "EWGF Trainer", title: "Electric rate", unit: "of 50",
@@ -157,6 +159,33 @@ export async function report(id, value) {
   } finally {
     if (pending[id] === value) delete pending[id];
   }
+}
+
+// Running-total boards: queue +1s and send them in small batches.
+const queued = {};
+let flushTimer = null;
+export function add(id, amount = 1) {
+  if (!user || !boardById(id)?.counter) return;
+  queued[id] = (queued[id] ?? 0) + amount;
+  if (!flushTimer) flushTimer = setTimeout(flush, 1500);
+}
+async function flush() {
+  flushTimer = null;
+  for (const id of Object.keys(queued)) {
+    const amount = Math.min(queued[id], 20);
+    queued[id] -= amount;
+    if (queued[id] <= 0) delete queued[id];
+    try {
+      const sb = await getClient();
+      const { data, error } = await sb.rpc("add_to_counter", { p_category: id, p_amount: amount });
+      if (error) throw error;
+      myBests[id] = data;
+      notify();
+    } catch (e) {
+      console.warn("Score not saved:", e);
+    }
+  }
+  if (Object.keys(queued).length && !flushTimer) flushTimer = setTimeout(flush, 1500);
 }
 
 export async function top(id, limit = 25) {

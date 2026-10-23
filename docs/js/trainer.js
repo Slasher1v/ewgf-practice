@@ -114,6 +114,7 @@ export class TrainerTab {
       this.streak += 1;
       this.bestStreak = Math.max(this.bestStreak, this.streak);
       this.app.report("ewgf_streak", this.streak);
+      if (r.speed === 13) this.app.count("i13_count");
     } else this.streak = 0;
     this.recent.push(r.electric);
     if (this.recent.length > RATE_WINDOW) this.recent.shift();
@@ -181,7 +182,7 @@ export class TrainerTab {
     this.app.stopGames();
     audio.startLoop(variantById($("t-variant").value).events, Number($("t-speed").value));
     this.guideOn = true;
-    $("t-guide").textContent = "■ Stop rhythm";
+    $("t-guide").textContent = "Stop rhythm";
     $("t-guide").className = "btn gold";
   }
 
@@ -189,7 +190,7 @@ export class TrainerTab {
     if (!this.guideOn) return;
     audio.stopLoop();
     this.guideOn = false;
-    $("t-guide").textContent = "▶ Play rhythm";
+    $("t-guide").textContent = "Play rhythm";
     $("t-guide").className = "btn primary";
   }
 

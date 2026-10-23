@@ -60,7 +60,7 @@ export class RhythmTab {
     this.active = true;
     this.prev = null;
     this.realCombo = 0;
-    $("r-start").textContent = "■ Stop";
+    $("r-start").textContent = "Stop";
     $("r-start").className = "btn gold right";
     this.setBig("Press →", C.BLUE);
     this.setSub("Press → whenever you're ready - the rep starts on your f");
@@ -71,7 +71,7 @@ export class RhythmTab {
     this.active = false;
     this.rep = null;
     audio.cancelScheduled();
-    $("r-start").textContent = "▶ Start";
+    $("r-start").textContent = "Start";
     $("r-start").className = "btn primary right";
     this.setBig("Paused", C.FG);
   }

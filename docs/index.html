@@ -9,26 +9,30 @@
   <meta property="og:description" content="Frame-accurate Tekken 8 EWGF trainer in your browser - keyboard or controller.">
   <meta property="og:image" content="icon.png">
   <link rel="icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
   <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#09090b">
   <script type="module" src="js/main.js"></script>
 </head>
 <body>
   <header class="top">
     <div class="brand">
-      <img src="icon.png" alt="" width="34" height="34">
+      <img src="icon.png" alt="" width="28" height="28">
       <div>
         <h1>EWGF Practice</h1>
-        <p>Tekken 8 Electric trainer · judged on 60 fps game frames</p>
+        <p>Tekken 8 Electric trainer, judged on 60 fps game frames</p>
       </div>
     </div>
     <div class="top-right">
       <span id="keyhint" class="keyhint"></span>
-      <button id="open-account" class="btn ghost" hidden>👤 Sign in</button>
-      <button id="open-settings" class="btn ghost">⚙ Settings</button>
+      <button id="open-account" class="btn ghost" hidden>Sign in</button>
+      <button id="open-settings" class="btn ghost">Settings</button>
     </div>
   </header>
 
-  <div id="banner-sound" class="banner">🔈 Click anywhere or press a key to turn on sound</div>
+  <div id="banner-sound" class="banner">Click anywhere or press a key to turn on sound</div>
   <div id="banner-focus" class="banner warn" hidden>The page can't hear your keys right now - click here to keep practicing</div>
   <div id="banner-mobile" class="banner" hidden>This trainer needs a keyboard or a controller.</div>
 
@@ -36,7 +40,7 @@
     <button class="tab active" data-tab="trainer" role="tab">EWGF Trainer</button>
     <button class="tab" data-tab="rhythm" role="tab">Rhythm Game</button>
     <button class="tab" data-tab="df" role="tab">df+2 Trainer</button>
-    <button class="tab" data-tab="board" role="tab">🏆 Leaderboard</button>
+    <button class="tab" data-tab="board" role="tab">Leaderboard</button>
   </nav>
 
   <main>
@@ -74,10 +78,10 @@
         <div class="row">
           <label>Target <select id="t-variant"></select></label>
           <label><select id="t-speed"></select></label>
-          <button id="t-guide" class="btn primary">▶ Play rhythm</button>
+          <button id="t-guide" class="btn primary">Play rhythm</button>
         </div>
         <div class="row">
-          <button id="t-go-rhythm" class="btn gold">🎵 Go to Rhythm Game</button>
+          <button id="t-go-rhythm" class="btn ghost">Go to Rhythm Game</button>
           <span class="muted small">Reps start on your f - slowed down or real speed</span>
         </div>
         <div class="row">
@@ -95,7 +99,7 @@
         <div class="row">
           <label>Target <select id="r-variant"></select></label>
           <label>Speed <select id="r-speed"></select></label>
-          <button id="r-start" class="btn primary right">▶ Start</button>
+          <button id="r-start" class="btn primary right">Start</button>
         </div>
         <div class="row">
           <label class="check"><input type="checkbox" id="r-dtone" checked> d tone</label>
@@ -123,7 +127,7 @@
         <div class="row">
           <label>Cue gap <select id="d-gap"></select></label>
           <label>Start level <input type="number" id="d-level" min="1" max="20" value="10"></label>
-          <button id="d-start" class="btn primary right">▶ Start</button>
+          <button id="d-start" class="btn primary right">Start</button>
         </div>
         <div class="row">
           <label>BPM <input type="number" id="d-bpm" min="60" max="200" step="5" value="100"></label>
@@ -158,7 +162,7 @@
               spellcheck="false" autocapitalize="off"></label>
             <label>Password <input type="password" id="lb-pass" class="text" autocomplete="current-password"></label>
             <button type="submit" id="lb-signin" class="btn primary">Sign in</button>
-            <button type="button" id="lb-signup" class="btn gold">Create account</button>
+            <button type="button" id="lb-signup" class="btn ghost">Create account</button>
           </form>
           <div id="lb-me" class="row" hidden>
             <span>Signed in as <b id="lb-name"></b></span>
@@ -177,7 +181,7 @@
           <thead><tr><th>#</th><th>Player</th><th>Score</th><th>When</th></tr></thead>
           <tbody id="lb-rows"></tbody>
         </table>
-        <div class="row end"><button type="button" id="lb-refresh" class="btn ghost">↻ Refresh</button></div>
+        <div class="row end"><button type="button" id="lb-refresh" class="btn ghost">Refresh</button></div>
       </div>
     </section>
   </main>

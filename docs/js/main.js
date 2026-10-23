@@ -29,6 +29,7 @@ const app = {
   },
   stopGames() { rhythm.stop(); df.stop(); },
   report(id, value) { lb.report(id, value); },
+  count(id) { lb.add(id, 1); },
 };
 
 const trainer = new TrainerTab(app);
@@ -242,7 +243,7 @@ const board = {
     $("lb-form").hidden = Boolean(u);
     $("lb-hint").hidden = Boolean(u);
     $("lb-me").hidden = !u;
-    $("open-account").textContent = u ? `👤 ${u.username}` : "👤 Sign in";
+    $("open-account").textContent = u ? u.username : "Sign in";
     if (u) {
       $("lb-name").textContent = u.username;
       const bests = lb.BOARDS.filter((b) => lb.myBest(b.id) !== null).map((b) => `${b.title} ${b.fmt(lb.myBest(b.id))}`);
@@ -283,7 +284,7 @@ const board = {
         const tr = document.createElement("tr");
         if (me && r.userId === me.id) tr.classList.add("me");
         if (i === 0) tr.classList.add("top1");
-        tr.append(cell(i === 0 ? "👑" : String(i + 1)), cell(r.username), cell(`${b.fmt(r.value)} ${b.unit}`), cell(fmtWhen(r.at)));
+        tr.append(cell(String(i + 1)), cell(r.username), cell(`${b.fmt(r.value)} ${b.unit}`), cell(fmtWhen(r.at)));
         return tr;
       }));
     } catch (e) {

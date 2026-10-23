@@ -8,6 +8,7 @@
 drop trigger if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
 drop function if exists public.submit_score(text, integer);
+drop function if exists public.add_to_counter(text, integer);
 drop table if exists public.scores;
 drop table if exists public.profiles;
 
@@ -36,7 +37,8 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ---------------------------------------------------------------------------
--- Scores: each player's best result per board.
+-- Scores: each player's best result (or running total) per board.
+--   i13_count    - total i13 (13-frame) Electrics ever landed       running total
 --   ewgf_streak  - most Electrics in a row (EWGF Trainer)          higher is better
 --   ewgf_rate50  - most Electrics in any 50 attempts in a row      higher is better
 --   rhythm_combo - longest combo at real speed (Rhythm Game)       higher is better
@@ -44,7 +46,7 @@ create trigger on_auth_user_created
 -- ---------------------------------------------------------------------------
 create table public.scores (
   user_id uuid not null references public.profiles (id) on delete cascade,
-  category text not null check (category in ('ewgf_streak', 'ewgf_rate50', 'rhythm_combo', 'df_streak')),
+  category text not null check (category in ('i13_count', 'ewgf_streak', 'ewgf_rate50', 'rhythm_combo', 'df_streak')),
   value integer not null check (value > 0),
   achieved_at timestamptz not null default now(),
   primary key (user_id, category)
@@ -85,3 +87,27 @@ end $$;
 
 revoke all on function public.submit_score(text, integer) from public, anon;
 grant execute on function public.submit_score(text, integer) to authenticated;
+
+-- Running totals (only the i13 counter for now): adds a small amount to your own total.
+create function public.add_to_counter(p_category text, p_amount integer) returns integer
+language plpgsql security definer set search_path = '' as $$
+declare
+  uid uuid := auth.uid();
+  total integer;
+begin
+  if uid is null then
+    raise exception 'Sign in to submit scores';
+  end if;
+  if p_category is distinct from 'i13_count' or p_amount is null or p_amount < 1 or p_amount > 20 then
+    raise exception 'Invalid score';
+  end if;
+  insert into public.scores (user_id, category, value)
+  values (uid, p_category, p_amount)
+  on conflict (user_id, category) do update
+    set value = public.scores.value + excluded.value, achieved_at = now()
+  returning value into total;
+  return total;
+end $$;
+
+revoke all on function public.add_to_counter(text, integer) from public, anon;
+grant execute on function public.add_to_counter(text, integer) to authenticated;
