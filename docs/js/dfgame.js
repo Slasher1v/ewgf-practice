@@ -2,12 +2,12 @@
 // tone. 1 frame starts stretched to 10 real frames; each hit shrinks it by one.
 
 import {
-  FRAME_MS, C, DF_START_LEVEL, DF_LEVEL_DOWN, DF_RANGE_AFTER_MS, DF_COUNT_IN, DF_REST_MS,
+  FRAME_MS, C, L, DF_START_LEVEL, DF_LEVEL_DOWN, DF_RANGE_AFTER_MS, DF_COUNT_IN, DF_REST_MS,
   DF_GAPS, DF_HISTORY, settings, keyName,
-} from "./config.js?v=20261023195230";
-import { judgeDfRep } from "./engine.js?v=20261023195230";
-import { Painter, renderChips } from "./draw.js?v=20261023195230";
-import * as audio from "./audio.js?v=20261023195230";
+} from "./config.js?v=20261023195621";
+import { judgeDfRep } from "./engine.js?v=20261023195621";
+import { Painter, renderChips } from "./draw.js?v=20261023195621";
+import * as audio from "./audio.js?v=20261023195621";
 
 const $ = (id) => document.getElementById(id);
 const clock = () => new Date().toTimeString().slice(0, 8);
@@ -278,18 +278,18 @@ export class DFTab {
           { color: k === 0 ? C.GREEN : C.MUTED, size: 10, mono: true });
       }
     }
-    const lanes = { cue: [30, C.MUTED, "f cue (auto)"], d: [72, C.PURPLE, "↓ d"], f: [110, C.BLUE, "→ f"], 2: [148, C.GOLD, "2"] };
+    const lanes = { cue: [30, C.MUTED, "f cue (auto)"], d: [72, L.D, "↓ d"], f: [110, L.F, "→ f"], 2: [148, L.TWO, "2"] };
     for (const [y, col, label] of Object.values(lanes)) p.text(8, y, label, { color: col, bold: true, size: 12, align: "left" });
     const lo = mmin, hi = mmax;
     const clipx = (m) => X(Math.max(lo, Math.min(hi, m)));
-    p.circle(X(R(rep.T_f)), 30, 9, { fill: C.BLUE });
+    p.circle(X(R(rep.T_f)), 30, 9, { fill: L.F });
     const xh = X(R(rep.T_hit));
     for (const key of ["f", "2"]) p.circle(xh, lanes[key][0], 11, { stroke: lanes[key][1] });
     p.text(xh, 52, "d down before here", { color: C.MUTED, size: 10 });
 
     const yd = lanes.d[0];
-    for (const [a, b] of rep.dSegs) p.rect(clipx(R(a)), yd - 4, clipx(R(b === null ? now : b)), yd + 4, C.PURPLE);
-    if (rep.t_d !== null && R(rep.t_d) >= lo && R(rep.t_d) <= hi) p.circle(X(R(rep.t_d)), yd, 7, { fill: C.PURPLE, stroke: C.FG, width: 1 });
+    for (const [a, b] of rep.dSegs) p.rect(clipx(R(a)), yd - 4, clipx(R(b === null ? now : b)), yd + 4, L.D);
+    if (rep.t_d !== null && R(rep.t_d) >= lo && R(rep.t_d) <= hi) p.circle(X(R(rep.t_d)), yd, 7, { fill: L.D, stroke: C.FG, width: 1 });
 
     const orderFail = rep.judgement && rep.judgement.reason.startsWith("f pressed");
     for (const [key, t] of [["f", rep.t_f], ["2", rep.t_2]]) {

@@ -58,17 +58,19 @@ export const DF_HISTORY = 8;
 
 export const ATTACKS = ["1", "2", "3", "4"];
 
-// Colours: black / white / purple. The names are roles, not literal colours:
+// Colours: pink / red / wine palette. The names are roles, not literal colours:
 // GOLD = best result & highlights, GREEN = clean / df, YELLOW = okay,
 // ORANGE = slow, RED = miss, BLUE = forward lane, PURPLE = down lane.
 export const C = {
-  BG: "#09090b", PANEL: "#111114", CELL: "#1a1a1f", LINE: "#26262d", DIV: "#2f2f37",
-  FG: "#fafafa", MUTED: "#8b8b97", INK: "#09090b",
-  GOLD: "#c4b5fd", GREEN: "#a78bfa", YELLOW: "#e9e4fb", ORANGE: "#a39fb3",
-  RED: "#f472b6", BLUE: "#fafafa", PURPLE: "#7c6bb5",
+  BG: "#1a000b", PANEL: "#2b0013", CELL: "#3d0a1f", LINE: "#521631", DIV: "#5e1d39",
+  FG: "#fff1f5", MUTED: "#c9909f", INK: "#2b0013",
+  GOLD: "#ffdbe8", GREEN: "#ff94b2", YELLOW: "#ffb8cb", ORANGE: "#d68a9f",
+  RED: "#f24455", BLUE: "#ffffff", PURPLE: "#ff94b2",
 };
+// One clearly different colour per input, light to dark: f, d, df, then n.
+export const L = { F: "#ffffff", D: "#ff94b2", DF: "#e5203a", TWO: "#ffdbe8", N: "#660f24" };
 export const ARROWS = { n: "•", f: "→", b: "←", d: "↓", u: "↑", df: "↘", db: "↙", uf: "↗", ub: "↖" };
-export const DIR_COLORS = { f: C.BLUE, n: C.CELL, d: C.PURPLE, df: C.GREEN };
+export const DIR_COLORS = { f: L.F, n: L.N, d: L.D, df: L.DF };
 
 // ---------------------------------------------------------------------------
 // User settings, saved in this browser only.

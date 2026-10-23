@@ -1,12 +1,12 @@
 // EWGF Trainer tab: free practice, every attempt judged on 60 fps frames.
 
 import {
-  FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, ARROWS, DIR_COLORS,
+  FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, L, ARROWS, DIR_COLORS,
   VARIANTS, SPEEDS, EWGF_BASE_STARTUP, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js?v=20261023195230";
-import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023195230";
-import { Painter, renderChips } from "./draw.js?v=20261023195230";
-import * as audio from "./audio.js?v=20261023195230";
+} from "./config.js?v=20261023195621";
+import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023195621";
+import { Painter, renderChips } from "./draw.js?v=20261023195621";
+import * as audio from "./audio.js?v=20261023195621";
 
 const $ = (id) => document.getElementById(id);
 
@@ -225,7 +225,7 @@ export class TrainerTab {
       p.text(X(m + 0.5), bottom + 36, String(m), { color: C.MUTED, size: 10, mono: true });
     }
     p.text(left - 8, bottom + 36, "frame", { color: C.MUTED, size: 10, align: "right" });
-    const lanes = { f: [34, C.BLUE, "→ f"], d: [76, C.PURPLE, "↓ d"], df: [118, C.GREEN, "↘ df+2"] };
+    const lanes = { f: [34, L.F, "→ f"], d: [76, L.D, "↓ d"], df: [118, L.DF, "↘ df+2"] };
     for (const [y, col, label] of Object.values(lanes)) p.text(8, y, label, { color: col, bold: true, size: 13, align: "left" });
     p.text(8, bottom + 12, "game read", { color: C.MUTED, bold: true, size: 11, align: "left" });
 
@@ -239,10 +239,10 @@ export class TrainerTab {
         if (fr.active.has(key)) { const [y, col] = lanes[key]; p.rect(X(i), y - 5, X(i + 1), y + 5, col); }
       }
       const ydf = lanes.df[0];
-      if (fr.dir === "df") p.rect(X(i) + 3, ydf - 9, X(i + 1) - 3, ydf + 9, C.GREEN);
+      if (fr.dir === "df") p.rect(X(i) + 3, ydf - 9, X(i + 1) - 3, ydf + 9, L.DF);
       if (fr.pressed.has("2")) {
-        p.box(X(i) + 1, ydf - 16, X(i + 1) - 1, ydf + 16, C.GOLD, 2);
-        p.text(X(i + 0.5), ydf - 25, "2", { color: C.GOLD, bold: true, size: 13, mono: true });
+        p.box(X(i) + 1, ydf - 16, X(i + 1) - 1, ydf + 16, L.TWO, 2);
+        p.text(X(i + 0.5), ydf - 25, "2", { color: L.TWO, bold: true, size: 13, mono: true });
       }
       const startT = this.sampler.t0 + fr.index * FRAME_MS;
       for (const [kind, btn, t] of fr.events) {
@@ -253,7 +253,7 @@ export class TrainerTab {
       const col = DIR_COLORS[fr.dir] || C.RED;
       p.rect(X(i) + 1, bottom + 1, X(i + 1) - 1, bottom + 23, col);
       p.text(X(i + 0.5), bottom + 12, ARROWS[fr.dir] || fr.dir,
-        { color: ["f", "df", "d"].includes(fr.dir) ? C.INK : C.FG, bold: true, size: 14 });
+        { color: ["f", "d"].includes(fr.dir) ? C.INK : C.FG, bold: true, size: 14 });
     });
     if (!r.electric) p.box(X(n - 1), top, X(n), bottom + 24, C.RED, 2);
   }

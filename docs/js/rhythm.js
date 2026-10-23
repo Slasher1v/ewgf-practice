@@ -3,12 +3,12 @@
 // slow-down, but df and 2 are always judged on real game frames.
 
 import {
-  FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
-} from "./config.js?v=20261023195230";
-import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023195230";
-import { inputFrames } from "./trainer.js?v=20261023195230";
-import { Painter, renderChips } from "./draw.js?v=20261023195230";
-import * as audio from "./audio.js?v=20261023195230";
+  FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, L, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
+} from "./config.js?v=20261023195621";
+import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023195621";
+import { inputFrames } from "./trainer.js?v=20261023195621";
+import { Painter, renderChips } from "./draw.js?v=20261023195621";
+import * as audio from "./audio.js?v=20261023195621";
 
 const $ = (id) => document.getElementById(id);
 const GRADE_COLORS = { PERFECT: C.GOLD, GREAT: C.GREEN, MISS: C.RED };
@@ -214,11 +214,11 @@ export class RhythmTab {
       if (m % step === 0) p.text(X(m + 0.5), bottom + 15, String(m), { color: C.MUTED, size: colw < 18 ? 9 : 10, mono: true });
     }
     p.text(left - 8, bottom + 15, "game frame", { color: C.MUTED, size: 10, align: "right" });
-    const lanes = { f: [52, C.BLUE, "→ f"], d: [108, C.PURPLE, "↓ d"], df: [164, C.GREEN, "↘ df+2"] };
+    const lanes = { f: [52, L.F, "→ f"], d: [108, L.D, "↓ d"], df: [164, L.DF, "↘ df+2"] };
     const ydf = lanes.df[0];
     for (const [kind, t] of rep.marks) {
       const m = Math.floor(R(t));
-      if (m >= mmin && m < mmax) p.box(X(m) + 1, ydf - 22, X(m + 1) - 1, ydf + 22, kind === "df" ? C.GREEN : C.GOLD, 2);
+      if (m >= mmin && m < mmax) p.box(X(m) + 1, ydf - 22, X(m + 1) - 1, ydf + 22, kind === "df" ? L.DF : L.TWO, 2);
     }
     for (const [y, col, label] of Object.values(lanes)) {
       p.text(10, y, label, { color: col, bold: true, size: 13, align: "left" });
@@ -242,10 +242,10 @@ export class RhythmTab {
     for (const [kind, t] of rep.marks) {
       const m = R(t);
       if (m < lo || m > hi) continue;
-      if (kind === "df") p.diamond(X(m), ydf, 9, C.GREEN);
+      if (kind === "df") p.diamond(X(m), ydf, 9, L.DF);
       else {
-        p.text(X(m), ydf - 30, "2", { color: C.GOLD, bold: true, size: 14, mono: true });
-        p.line(X(m), ydf - 14, X(m), ydf + 14, C.GOLD, 2);
+        p.text(X(m), ydf - 30, "2", { color: L.TWO, bold: true, size: 14, mono: true });
+        p.line(X(m), ydf - 14, X(m), ydf + 14, L.TWO, 2);
       }
     }
     const ph = R(now);
