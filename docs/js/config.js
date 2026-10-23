@@ -58,18 +58,18 @@ export const DF_HISTORY = 8;
 
 export const ATTACKS = ["1", "2", "3", "4"];
 
-// Colours: Keppel / Celadon / Vanilla / Orange / Giants orange. The names are roles, not literal colours:
-// GOLD = best result & highlights, GREEN = clean / df, YELLOW = okay,
-// ORANGE = slow, RED = miss, BLUE = forward lane, PURPLE = down lane.
+// Colours: graphite / white / one electric-blue accent. The names are roles:
+// GOLD = best result & highlights, GREEN = clean / target zones, YELLOW = okay,
+// ORANGE = slow, RED = miss, BLUE = prompts, PURPLE = spare.
 export const C = {
-  BG: "#0b1f1d", PANEL: "#10302c", CELL: "#17403a", LINE: "#22524a", DIV: "#2b5e55",
-  FG: "#fdf6dc", MUTED: "#93b5ab", INK: "#0b1f1d",
-  GOLD: "#f9a822", GREEN: "#2bbaa5", YELLOW: "#faecb6", ORANGE: "#c9b98a",
-  RED: "#f96635", BLUE: "#faecb6", PURPLE: "#93d3ae",
+  BG: "#0c0c0e", PANEL: "#141417", CELL: "#1c1c20", LINE: "#27272c", DIV: "#303036",
+  FG: "#f5f5f7", MUTED: "#8e8e96", INK: "#0c0c0e",
+  GOLD: "#5e9bff", GREEN: "#f5f5f7", YELLOW: "#c9c9cf", ORANGE: "#8e8e96",
+  RED: "#ff5a5f", BLUE: "#f5f5f7", PURPLE: "#8e8e96",
 };
-// One clearly different colour per input: f vanilla, d celadon, df giants
-// orange, 2 orange outline, n dark teal.
-export const L = { F: "#faecb6", D: "#93d3ae", DF: "#f96635", TWO: "#f9a822", N: "#1f4d46" };
+// Inputs are told apart by brightness, with blue for the df+2 moment:
+// f white, d gray, df blue, 2 white outline, n dark gray.
+export const L = { F: "#f5f5f7", D: "#8e8e96", DF: "#5e9bff", TWO: "#ffffff", N: "#2c2c32" };
 export const ARROWS = { n: "•", f: "→", b: "←", d: "↓", u: "↑", df: "↘", db: "↙", uf: "↗", ub: "↖" };
 export const DIR_COLORS = { f: L.F, n: L.N, d: L.D, df: L.DF };
 

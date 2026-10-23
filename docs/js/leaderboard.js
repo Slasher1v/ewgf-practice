@@ -2,7 +2,7 @@
 // player's best score per board. Everything here is optional: if Supabase
 // isn't configured or can't be reached, the trainer works as before.
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./supabase-config.js?v=20261023202411";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./supabase-config.js?v=20261023214640";
 
 const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm";
 

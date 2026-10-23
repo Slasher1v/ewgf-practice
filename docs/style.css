@@ -1,11 +1,11 @@
-/* EWGF Practice - Keppel / Celadon / Vanilla / Orange / Giants orange */
+/* EWGF Practice - graphite, white and one electric-blue accent */
 :root {
-  --bg: #0b1f1d; --panel: #10302c; --cell: #17403a; --line: #22524a;
-  --fg: #fdf6dc; --muted: #93b5ab; --ink: #0b1f1d;
-  --keppel: #2bbaa5; --celadon: #93d3ae; --vanilla: #faecb6; --orange: #f9a822; --giants: #f96635;
-  --accent: #f9a822; --accent-strong: #f96635; --accent-soft: rgba(249, 168, 34, .12);
-  --grad: linear-gradient(135deg, #f9a822 0%, #f96635 100%);
-  --bad: #f96635;
+  --bg: #0c0c0e; --panel: #141417; --cell: #1c1c20; --line: #27272c;
+  --fg: #f5f5f7; --muted: #8e8e96; --ink: #0c0c0e;
+  --gray: #8e8e96; --blue: #5e9bff;
+  --accent: #5e9bff; --accent-strong: #3f86ff; --accent-soft: rgba(94, 155, 255, .12);
+  --grad: #5e9bff;
+  --bad: #ff5a5f;
   --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Consolas, Menlo, monospace;
   color-scheme: dark;
@@ -45,8 +45,8 @@ button, select, input { font: inherit; color: inherit; }
 /* controls */
 .btn { border: 1px solid transparent; border-radius: 999px; padding: 7px 16px; cursor: pointer; font-weight: 500; font-size: 14px;
   transition: background .15s, border-color .15s, color .15s; }
-.btn.primary { background: var(--grad); color: var(--ink); box-shadow: 0 4px 18px rgba(249, 102, 53, .35); }
-.btn.primary:hover { filter: brightness(1.08); }
+.btn.primary { background: var(--grad); color: #fff; box-shadow: none; }
+.btn.primary:hover { background: #77abff; }
 .btn.gold { background: transparent; border-color: var(--accent); color: var(--accent); }
 .btn.gold:hover { background: var(--accent-soft); }
 .btn.ghost { background: transparent; border-color: var(--line); color: var(--fg); }
@@ -73,17 +73,17 @@ label.check { color: var(--fg); }
 
 /* results */
 .glow { position: fixed; inset: -30vh 0 auto; height: 70vh; pointer-events: none; z-index: -1;
-  background: radial-gradient(ellipse 60% 55% at 50% 30%, rgba(43, 186, 165, .25), transparent 70%); }
+  background: radial-gradient(ellipse 60% 55% at 50% 30%, rgba(94, 155, 255, .10), transparent 70%); }
 
 /* the big result card */
 .stage { position: relative; text-align: center; padding: 34px 20px 26px; margin: 0 0 14px; border-radius: 20px;
   border: 1px solid var(--line); overflow: hidden;
-  background: radial-gradient(ellipse 70% 90% at 50% 0%, rgba(43, 186, 165, .18), transparent 70%), var(--panel); }
-.big { font-size: 56px; font-weight: 700; line-height: 1.05; letter-spacing: -.035em;
+  background: radial-gradient(ellipse 70% 90% at 50% 0%, rgba(94, 155, 255, .07), transparent 70%), var(--panel); }
+.big { font-size: 64px; font-weight: 700; line-height: 1.05; letter-spacing: -.035em;
   text-shadow: 0 0 48px color-mix(in srgb, currentColor 40%, transparent); transition: color .2s; }
 .stage .lamps { margin: 22px 0 0; }
 .frames { display: inline-block; margin-top: 12px; padding: 5px 16px; border-radius: 999px; font-size: 17px; font-weight: 600;
-  color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(249, 168, 34, .4); font-variant-numeric: tabular-nums; }
+  color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(94, 155, 255, .35); font-variant-numeric: tabular-nums; }
 .frames:empty { display: none; }
 
 /* stat tiles */
@@ -99,12 +99,12 @@ label.check { color: var(--fg); }
 /* nerd mode: detail is hidden until switched on */
 body:not(.nerd-on) .nerd, body:not(.nerd-on) .nerd-inline, body:not(.nerd-on) .nerd-cell { display: none !important; }
 .nerd-toggle { position: fixed; right: 20px; bottom: 20px; z-index: 10; display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 18px 10px 12px; border-radius: 999px; border: 1px solid rgba(249, 168, 34, .65); background: rgba(16, 48, 44, .92);
+  padding: 10px 18px 10px 12px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .28); background: rgba(20, 20, 23, .92);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); color: var(--fg); font-size: 14px; font-weight: 600;
-  cursor: pointer; box-shadow: 0 0 0 4px rgba(249, 168, 34, .10), 0 8px 30px rgba(249, 168, 34, .30);
+  cursor: pointer; box-shadow: 0 8px 28px rgba(0, 0, 0, .55);
   transition: transform .15s, box-shadow .15s; }
-.nerd-toggle:hover { transform: translateY(-1px); box-shadow: 0 0 0 4px rgba(249, 168, 34, .18), 0 10px 36px rgba(249, 168, 34, .45); }
-.nerd-toggle .switch { width: 32px; height: 18px; border-radius: 999px; background: #22524a; position: relative; transition: background .2s; }
+.nerd-toggle:hover { transform: translateY(-1px); box-shadow: 0 10px 32px rgba(0, 0, 0, .65); border-color: rgba(255, 255, 255, .5); }
+.nerd-toggle .switch { width: 32px; height: 18px; border-radius: 999px; background: #3a3a40; position: relative; transition: background .2s; }
 .nerd-toggle .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%;
   background: var(--fg); transition: transform .2s; }
 .nerd-on .nerd-toggle { color: var(--accent); border-color: var(--accent); }
@@ -122,10 +122,9 @@ body:not(.nerd-on) .nerd, body:not(.nerd-on) .nerd-inline, body:not(.nerd-on) .n
 .lamps span { width: 36px; text-align: center; padding: 4px 0; border-radius: 8px; border: 1px solid var(--line);
   color: var(--muted); font-weight: 600; font-size: 14px; }
 .lamps span.on { background: var(--accent); border-color: var(--accent); color: var(--ink); }
-/* lamps match the chart: f vanilla, d celadon, 2 orange */
-.lamps span[data-btn="f"].on, .lamps span[data-btn="b"].on { background: var(--vanilla); border-color: var(--vanilla); }
-.lamps span[data-btn="d"].on, .lamps span[data-btn="u"].on { background: var(--celadon); border-color: var(--celadon); }
-.lamps span[data-btn="2"].on { background: var(--orange); border-color: var(--orange); }
+/* lamps match the chart: directions white / gray, buttons blue */
+.lamps span[data-btn="f"].on, .lamps span[data-btn="b"].on { background: #fff; border-color: #fff; }
+.lamps span[data-btn="d"].on, .lamps span[data-btn="u"].on { background: var(--gray); border-color: var(--gray); }
 
 canvas.cv { display: block; width: 100%; background: var(--panel); border-radius: 16px; border: 1px solid var(--line); }
 canvas.cv.ladder { background: transparent; border: 0; margin-bottom: 14px; }

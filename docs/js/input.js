@@ -1,7 +1,7 @@
 // Keyboard + controller input -> logical buttons (f b d u 1 2 3 4) with
 // precise timestamps on the performance.now() clock.
 
-import { settings } from "./config.js?v=20261023202411";
+import { settings } from "./config.js?v=20261023214640";
 
 const subscribers = new Set();
 export const onInput = (fn) => subscribers.add(fn);

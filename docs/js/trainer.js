@@ -2,11 +2,11 @@
 
 import {
   FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, L, ARROWS, DIR_COLORS,
-  VARIANTS, SPEEDS, EWGF_BASE_STARTUP, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js?v=20261023202411";
-import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023202411";
-import { Painter, renderChips } from "./draw.js?v=20261023202411";
-import * as audio from "./audio.js?v=20261023202411";
+  VARIANTS, SPEEDS, settings, saveSettings, variantById, targetSpeed,
+} from "./config.js?v=20261023214640";
+import { FrameSampler, EWGFDetector } from "./engine.js?v=20261023214640";
+import { Painter, renderChips } from "./draw.js?v=20261023214640";
+import * as audio from "./audio.js?v=20261023214640";
 
 const $ = (id) => document.getElementById(id);
 
@@ -19,7 +19,6 @@ export function resultColor(r) {
 }
 
 const RATE_WINDOW = 50;
-export const inputFrames = (mv) => `Input: ${mv} frame${mv === 1 ? "" : "s"}`;
 const fmtMs = (v) => (v === null || v === undefined ? "-" : v.toFixed(1));
 const clock = (ts) => new Date(ts).toTimeString().slice(0, 8);
 
@@ -72,9 +71,9 @@ export class TrainerTab {
       return;
     }
     const color = resultColor(r);
-    $("t-title").textContent = resultTitle(r);
-    // Total input time from f to df+2 - only meaningful once the motion was finished
-    $("t-frames").textContent = r.kind === "fail" ? "" : inputFrames(r.movement);
+    // The headline is the move's real speed (i13, i14, ...): input frames + 11
+    $("t-title").textContent = r.electric ? `i${r.speed}` : r.kind === "wgf_late" ? "WGF" : "Dropped";
+    $("t-frames").textContent = r.electric ? "Electric" : "";
     $("t-title").style.color = color;
     let sub;
     if (r.electric) sub = r.movement <= 4 ? "Clean" : r.movement <= 6 ? "A bit slow" : "Slow";
@@ -156,7 +155,7 @@ export class TrainerTab {
     const el = $("t-stats-full");
     const rateTxt = this.total ? `${Math.round((100 * this.electrics) / this.total)}%` : "-";
     renderChips($("t-stats"), [["Electric", rateTxt], ["Streak", String(this.streak)],
-      ["Fastest input", this.best ? `${this.best - EWGF_BASE_STARTUP}f` : "-"]]);
+      ["Best", this.best ? `i${this.best}` : "-"]]);
     if (this.total === 0) { el.textContent = "Attempts 0   ·   Electric -   ·   Streak 0   ·   Avg -   ·   Best -"; return; }
     const rate = (100 * this.electrics) / this.total;
     const avg = this.electrics ? `i${(this.speedSum / this.electrics).toFixed(1)}` : "-";
