@@ -4,10 +4,11 @@
 
 import {
   FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
-} from "./config.js?v=20261023194407";
-import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023194407";
-import { Painter, renderChips } from "./draw.js?v=20261023194407";
-import * as audio from "./audio.js?v=20261023194407";
+} from "./config.js?v=20261023195230";
+import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023195230";
+import { inputFrames } from "./trainer.js?v=20261023195230";
+import { Painter, renderChips } from "./draw.js?v=20261023195230";
+import * as audio from "./audio.js?v=20261023195230";
 
 const $ = (id) => document.getElementById(id);
 const GRADE_COLORS = { PERFECT: C.GOLD, GREAT: C.GREEN, MISS: C.RED };
@@ -153,6 +154,7 @@ export class RhythmTab {
     if (settings.resultSounds) audio.play(sound);
 
     this.setBig(j.grade, GRADE_COLORS[j.grade]);
+    $("r-frames").textContent = j.result && j.result.kind !== "fail" && j.result.kind !== "no_attack" ? inputFrames(j.result.movement) : "";
     this.setSub(j.reason);
     $("r-detail").textContent = RhythmTab.detailText(j);
     $("r-math").textContent = j.math ? j.math.join("\n") : "";

@@ -2,11 +2,11 @@
 
 import {
   FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, ARROWS, DIR_COLORS,
-  VARIANTS, SPEEDS, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js?v=20261023194407";
-import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023194407";
-import { Painter, renderChips } from "./draw.js?v=20261023194407";
-import * as audio from "./audio.js?v=20261023194407";
+  VARIANTS, SPEEDS, EWGF_BASE_STARTUP, settings, saveSettings, variantById, targetSpeed,
+} from "./config.js?v=20261023195230";
+import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023195230";
+import { Painter, renderChips } from "./draw.js?v=20261023195230";
+import * as audio from "./audio.js?v=20261023195230";
 
 const $ = (id) => document.getElementById(id);
 
@@ -19,6 +19,7 @@ export function resultColor(r) {
 }
 
 const RATE_WINDOW = 50;
+export const inputFrames = (mv) => `Input: ${mv} frame${mv === 1 ? "" : "s"}`;
 const fmtMs = (v) => (v === null || v === undefined ? "-" : v.toFixed(1));
 const clock = (ts) => new Date(ts).toTimeString().slice(0, 8);
 
@@ -72,6 +73,8 @@ export class TrainerTab {
     }
     const color = resultColor(r);
     $("t-title").textContent = resultTitle(r);
+    // Total input time from f to df+2 - only meaningful once the motion was finished
+    $("t-frames").textContent = r.kind === "fail" ? "" : inputFrames(r.movement);
     $("t-title").style.color = color;
     let sub;
     if (r.electric) sub = r.movement <= 4 ? "Clean" : r.movement <= 6 ? "A bit slow" : "Slow";
@@ -152,7 +155,8 @@ export class TrainerTab {
   updateStats() {
     const el = $("t-stats-full");
     const rateTxt = this.total ? `${Math.round((100 * this.electrics) / this.total)}%` : "-";
-    renderChips($("t-stats"), [["Electric", rateTxt], ["Streak", String(this.streak)], ["Best", this.best ? `i${this.best}` : "-"]]);
+    renderChips($("t-stats"), [["Electric", rateTxt], ["Streak", String(this.streak)],
+      ["Fastest input", this.best ? `${this.best - EWGF_BASE_STARTUP}f` : "-"]]);
     if (this.total === 0) { el.textContent = "Attempts 0   ·   Electric -   ·   Streak 0   ·   Avg -   ·   Best -"; return; }
     const rate = (100 * this.electrics) / this.total;
     const avg = this.electrics ? `i${(this.speedSum / this.electrics).toFixed(1)}` : "-";
@@ -170,6 +174,7 @@ export class TrainerTab {
     this.best = null;
     this.last = null;
     $("t-title").textContent = "Ready";
+    $("t-frames").textContent = "";
     $("t-title").style.color = C.FG;
     $("t-sub").textContent = "f, n, d, df+2";
     $("t-more").textContent = "";
