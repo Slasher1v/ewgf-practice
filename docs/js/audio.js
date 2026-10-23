@@ -2,7 +2,7 @@
 // clock. Browsers only allow sound after the first click or key press, so
 // call unlock() from a user gesture.
 
-import { FRAME_MS, GUIDE_LOOP_MS, settings } from "./config.js?v=20261023195621";
+import { FRAME_MS, GUIDE_LOOP_MS, settings } from "./config.js?v=20261023202411";
 
 let ctx = null;
 let master = null;

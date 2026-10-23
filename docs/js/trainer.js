@@ -3,10 +3,10 @@
 import {
   FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, L, ARROWS, DIR_COLORS,
   VARIANTS, SPEEDS, EWGF_BASE_STARTUP, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js?v=20261023195621";
-import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023195621";
-import { Painter, renderChips } from "./draw.js?v=20261023195621";
-import * as audio from "./audio.js?v=20261023195621";
+} from "./config.js?v=20261023202411";
+import { FrameSampler, EWGFDetector, resultTitle } from "./engine.js?v=20261023202411";
+import { Painter, renderChips } from "./draw.js?v=20261023202411";
+import * as audio from "./audio.js?v=20261023202411";
 
 const $ = (id) => document.getElementById(id);
 
@@ -253,7 +253,7 @@ export class TrainerTab {
       const col = DIR_COLORS[fr.dir] || C.RED;
       p.rect(X(i) + 1, bottom + 1, X(i + 1) - 1, bottom + 23, col);
       p.text(X(i + 0.5), bottom + 12, ARROWS[fr.dir] || fr.dir,
-        { color: ["f", "d"].includes(fr.dir) ? C.INK : C.FG, bold: true, size: 14 });
+        { color: ["f", "d", "df"].includes(fr.dir) ? C.INK : C.FG, bold: true, size: 14 });
     });
     if (!r.electric) p.box(X(n - 1), top, X(n), bottom + 24, C.RED, 2);
   }

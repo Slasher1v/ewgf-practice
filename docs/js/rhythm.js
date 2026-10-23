@@ -4,11 +4,11 @@
 
 import {
   FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, L, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
-} from "./config.js?v=20261023195621";
-import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023195621";
-import { inputFrames } from "./trainer.js?v=20261023195621";
-import { Painter, renderChips } from "./draw.js?v=20261023195621";
-import * as audio from "./audio.js?v=20261023195621";
+} from "./config.js?v=20261023202411";
+import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023202411";
+import { inputFrames } from "./trainer.js?v=20261023202411";
+import { Painter, renderChips } from "./draw.js?v=20261023202411";
+import * as audio from "./audio.js?v=20261023202411";
 
 const $ = (id) => document.getElementById(id);
 const GRADE_COLORS = { PERFECT: C.GOLD, GREAT: C.GREEN, MISS: C.RED };

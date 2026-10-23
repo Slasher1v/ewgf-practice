@@ -58,17 +58,18 @@ export const DF_HISTORY = 8;
 
 export const ATTACKS = ["1", "2", "3", "4"];
 
-// Colours: pink / red / wine palette. The names are roles, not literal colours:
+// Colours: Keppel / Celadon / Vanilla / Orange / Giants orange. The names are roles, not literal colours:
 // GOLD = best result & highlights, GREEN = clean / df, YELLOW = okay,
 // ORANGE = slow, RED = miss, BLUE = forward lane, PURPLE = down lane.
 export const C = {
-  BG: "#1a000b", PANEL: "#2b0013", CELL: "#3d0a1f", LINE: "#521631", DIV: "#5e1d39",
-  FG: "#fff1f5", MUTED: "#c9909f", INK: "#2b0013",
-  GOLD: "#ffdbe8", GREEN: "#ff94b2", YELLOW: "#ffb8cb", ORANGE: "#d68a9f",
-  RED: "#f24455", BLUE: "#ffffff", PURPLE: "#ff94b2",
+  BG: "#0b1f1d", PANEL: "#10302c", CELL: "#17403a", LINE: "#22524a", DIV: "#2b5e55",
+  FG: "#fdf6dc", MUTED: "#93b5ab", INK: "#0b1f1d",
+  GOLD: "#f9a822", GREEN: "#2bbaa5", YELLOW: "#faecb6", ORANGE: "#c9b98a",
+  RED: "#f96635", BLUE: "#faecb6", PURPLE: "#93d3ae",
 };
-// One clearly different colour per input, light to dark: f, d, df, then n.
-export const L = { F: "#ffffff", D: "#ff94b2", DF: "#e5203a", TWO: "#ffdbe8", N: "#660f24" };
+// One clearly different colour per input: f vanilla, d celadon, df giants
+// orange, 2 orange outline, n dark teal.
+export const L = { F: "#faecb6", D: "#93d3ae", DF: "#f96635", TWO: "#f9a822", N: "#1f4d46" };
 export const ARROWS = { n: "•", f: "→", b: "←", d: "↓", u: "↑", df: "↘", db: "↙", uf: "↗", ub: "↖" };
 export const DIR_COLORS = { f: L.F, n: L.N, d: L.D, df: L.DF };
 

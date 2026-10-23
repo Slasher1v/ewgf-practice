@@ -4,10 +4,10 @@
 import {
   FRAME_MS, C, L, DF_START_LEVEL, DF_LEVEL_DOWN, DF_RANGE_AFTER_MS, DF_COUNT_IN, DF_REST_MS,
   DF_GAPS, DF_HISTORY, settings, keyName,
-} from "./config.js?v=20261023195621";
-import { judgeDfRep } from "./engine.js?v=20261023195621";
-import { Painter, renderChips } from "./draw.js?v=20261023195621";
-import * as audio from "./audio.js?v=20261023195621";
+} from "./config.js?v=20261023202411";
+import { judgeDfRep } from "./engine.js?v=20261023202411";
+import { Painter, renderChips } from "./draw.js?v=20261023202411";
+import * as audio from "./audio.js?v=20261023202411";
 
 const $ = (id) => document.getElementById(id);
 const clock = () => new Date().toTimeString().slice(0, 8);
