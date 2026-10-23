@@ -18,6 +18,7 @@ export function resultColor(r) {
   return C.ORANGE;
 }
 
+const RATE_WINDOW = 50;
 const fmtMs = (v) => (v === null || v === undefined ? "-" : v.toFixed(1));
 const clock = (ts) => new Date(ts).toTimeString().slice(0, 8);
 
@@ -32,6 +33,9 @@ export class TrainerTab {
     this.speedSum = 0;
     this.best = null;
     this.last = null;
+    this.streak = 0;
+    this.bestStreak = 0;
+    this.recent = [];        // last 50 results (true = Electric) for the rate board
     this.guideOn = false;
     this.painter = new Painter($("t-hist"));
 
@@ -107,7 +111,13 @@ export class TrainerTab {
       this.electrics += 1;
       this.speedSum += r.speed;
       this.best = this.best === null ? r.speed : Math.min(this.best, r.speed);
-    }
+      this.streak += 1;
+      this.bestStreak = Math.max(this.bestStreak, this.streak);
+      this.app.report("ewgf_streak", this.streak);
+    } else this.streak = 0;
+    this.recent.push(r.electric);
+    if (this.recent.length > RATE_WINDOW) this.recent.shift();
+    if (this.recent.length === RATE_WINDOW) this.app.report("ewgf_rate50", this.recent.filter(Boolean).length);
     this.history.unshift(r);
     this.history.length = Math.min(this.history.length, HISTORY_SIZE);
     this.last = r;
@@ -140,17 +150,20 @@ export class TrainerTab {
 
   updateStats() {
     const el = $("t-stats");
-    if (this.total === 0) { el.textContent = "Attempts 0   ·   Electric -   ·   Avg -   ·   Best -"; return; }
+    if (this.total === 0) { el.textContent = "Attempts 0   ·   Electric -   ·   Streak 0   ·   Avg -   ·   Best -"; return; }
     const rate = (100 * this.electrics) / this.total;
     const avg = this.electrics ? `i${(this.speedSum / this.electrics).toFixed(1)}` : "-";
     const best = this.best ? `i${this.best}` : "-";
     const l10 = this.history.filter((h) => h.electric).length;
-    el.textContent = `Attempts ${this.total}   ·   Electric ${rate.toFixed(0)}%   ·   Last ${this.history.length}: ${l10}/${this.history.length}   ·   Avg ${avg}   ·   Best ${best}`;
+    el.textContent = `Attempts ${this.total}   ·   Electric ${rate.toFixed(0)}%   ·   Last ${this.history.length}: ${l10}/${this.history.length}   ·   `
+      + `Streak ${this.streak} (best ${this.bestStreak})   ·   Avg ${avg}   ·   Best ${best}`;
   }
 
   reset() {
     this.history = [];
     this.total = this.electrics = this.speedSum = 0;
+    this.streak = this.bestStreak = 0;
+    this.recent = [];
     this.best = null;
     this.last = null;
     $("t-title").textContent = "Ready";

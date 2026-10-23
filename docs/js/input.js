@@ -59,6 +59,8 @@ function btnForCode(code) {
 }
 
 const isFormField = (el) => el && (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA");
+// Username / password boxes: let the player type, game keys pause meanwhile.
+const isTextEntry = (el) => el && el.tagName === "INPUT" && (el.type === "text" || el.type === "password");
 
 window.addEventListener("keydown", (e) => {
   if (capture) {
@@ -67,6 +69,7 @@ window.addEventListener("keydown", (e) => {
     else { const cb = capture; capture = null; cb(null); }
     return;
   }
+  if (isTextEntry(document.activeElement)) return;
   const btn = btnForCode(e.code);
   if (!btn) {
     if ((e.key === "Enter" || e.key === "Escape") && isFormField(document.activeElement)) document.activeElement.blur();
@@ -82,7 +85,7 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   const btn = btnForCode(e.code);
   if (!btn) return;
-  e.preventDefault();
+  if (!isTextEntry(document.activeElement)) e.preventDefault();
   letGo(btn, "k:" + e.code, sane(e.timeStamp));
 }, true);
 
@@ -91,6 +94,8 @@ window.addEventListener("blur", () => {
   for (const fn of focusSubs) fn(false);
 });
 window.addEventListener("focus", () => { for (const fn of focusSubs) fn(true); });
+// Starting to type into a text box lets go of anything held, so no key sticks.
+window.addEventListener("focusin", (e) => { if (isTextEntry(e.target)) releaseAll(); });
 
 // ---------------------------------------------------------------------------
 // Controllers (standard mapping): d-pad or left stick for directions,

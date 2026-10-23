@@ -19,6 +19,31 @@ Works with a keyboard or a controller - nothing to install.
 - **df+2 Trainer** - drills just the "df and 2 on the same frame" part. The frame starts
   stretched to 10 real frames and shrinks by one every hit, down to the real window.
 
+## Leaderboard
+
+The browser version has an online **🏆 Leaderboard** tab. Players make an account with just a
+username and password (no email), and their best runs are saved automatically on four boards:
+Electric streak, Electric rate (best 50 in a row), Real-speed combo (Rhythm Game) and
+Just-frame streak (df+2 at level 1). The desktop app doesn't submit scores.
+
+Scores are sent from the player's own browser, so someone determined could fake one. The
+database only lets each player raise their own best, and nobody can edit anyone else's.
+
+### Turning it on (one time, about 5 minutes)
+
+1. Make a free account at [supabase.com](https://supabase.com) and create a new project
+   (any name and region; save the database password somewhere).
+2. **SQL Editor -> New query**: paste everything from [`supabase/setup.sql`](supabase/setup.sql)
+   and press **Run**.
+3. **Authentication -> Sign In / Providers -> Email**: turn **off** "Confirm email" and save.
+   (Usernames are turned into placeholder addresses that can't receive mail.)
+4. **Project Settings -> API**: copy the **Project URL** and the **anon public** key into
+   [`docs/js/supabase-config.js`](docs/js/supabase-config.js), then commit and push.
+
+Until step 4 is done, the Leaderboard tab just says it isn't switched on yet and the site
+works fully offline. To remove a player, delete them under **Authentication -> Users**
+(their scores go with them).
+
 ## Controls
 
 Default keyboard: forward **D**, back **A**, down **S**, up **Space**, 1-4 = **U I J K**.
@@ -32,6 +57,8 @@ version (below) listens globally, so it can run next to the actual game.
 
 - `docs/` - the web version (plain HTML/CSS/JavaScript, no build step). GitHub Pages
   serves this folder.
+- `supabase/setup.sql` - the leaderboard database (accounts, scores and the rules that
+  protect them).
 - `ewgf_trainer.py` - the Windows desktop version (Python + Tkinter).
   Run with `pip install pynput numpy sounddevice` then `python ewgf_trainer.py`,
   or build `EWGF Practice.exe` with `build_exe.bat`.

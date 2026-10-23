@@ -27,6 +27,7 @@ export class DFTab {
     this.bestLevel = DF_START_LEVEL + 1;
     this.hitsAtLevel = 0;
     this.missStreak = 0;
+    this.realStreak = 0;     // hits in a row at level 1 (leaderboard)
     this.stats = { reps: 0, hits: 0, streak: 0, bestStreak: 0 };
     this.history = [];
     this.painter = new Painter($("d-grid"));
@@ -68,7 +69,7 @@ export class DFTab {
   start() {
     this.app.stopOthers("df");
     this.level = this.startLevel();
-    this.hitsAtLevel = this.missStreak = 0;
+    this.hitsAtLevel = this.missStreak = this.realStreak = 0;
     this.running = true;
     this.prev = null;
     $("d-start").textContent = "■ Stop";
@@ -158,6 +159,10 @@ export class DFTab {
       this.missStreak = 0;
       this.hitsAtLevel += 1;
       this.bestLevel = Math.min(this.bestLevel, this.level);
+      if (rep.level === 1) {
+        this.realStreak += 1;
+        this.app.report("df_streak", this.realStreak);
+      } else this.realStreak = 0;
       if (this.hitsAtLevel >= need) {
         this.hitsAtLevel = 0;
         sound = "electric_best";
@@ -168,6 +173,7 @@ export class DFTab {
       }
     } else {
       s.streak = 0;
+      this.realStreak = 0;
       this.hitsAtLevel = 0;
       this.missStreak += 1;
       if (this.missStreak >= DF_LEVEL_DOWN && this.level < this.startLevel()) {

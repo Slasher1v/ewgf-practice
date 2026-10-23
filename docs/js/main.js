@@ -6,6 +6,7 @@ import * as input from "./input.js";
 import { TrainerTab } from "./trainer.js";
 import { RhythmTab } from "./rhythm.js";
 import { DFTab } from "./dfgame.js";
+import * as lb from "./leaderboard.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -18,6 +19,7 @@ const app = {
     if (name !== "rhythm") rhythm.stop();
     if (name !== "df") df.stop();
     if (name !== "trainer") trainer.stopGuide();
+    if (name === "board") board.show();
   },
   // something new is starting: silence everything else
   stopOthers(who) {
@@ -26,6 +28,7 @@ const app = {
     if (who !== "df") df.stop();
   },
   stopGames() { rhythm.stop(); df.stop(); },
+  report(id, value) { lb.report(id, value); },
 };
 
 const trainer = new TrainerTab(app);
@@ -166,6 +169,135 @@ syncSettingsUI();
 refreshKeyHint();
 
 // ---------------------------------------------------------------------------
+// Leaderboard tab
+// ---------------------------------------------------------------------------
+const fmtWhen = (iso) => {
+  const d = new Date(iso);
+  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (days < 1) return "today";
+  if (days < 2) return "yesterday";
+  if (days < 30) return `${days} days ago`;
+  return d.toLocaleDateString();
+};
+
+const board = {
+  current: lb.BOARDS[0].id,
+  busy: false,
+  loadedAt: 0,
+
+  setup() {
+    $("lb-off").hidden = lb.configured();
+    $("lb-on").hidden = !lb.configured();
+    $("open-account").hidden = !lb.configured();
+    if (!lb.configured()) return;
+    $("lb-boards").replaceChildren(...lb.BOARDS.map((b) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.board = b.id;
+      const t = document.createElement("b");
+      t.textContent = b.title;
+      const sub = document.createElement("span");
+      sub.textContent = b.tab;
+      btn.append(t, sub);
+      btn.onclick = () => { this.current = b.id; this.load(); };
+      return btn;
+    }));
+    $("lb-form").onsubmit = (e) => { e.preventDefault(); this.auth("in"); };
+    $("lb-signup").onclick = () => this.auth("up");
+    $("lb-signout").onclick = async () => { await lb.signOut().catch(() => {}); this.msg(""); };
+    $("lb-refresh").onclick = () => this.load();
+    $("open-account").onclick = () => app.selectTab("board");
+    lb.onChange(() => this.renderAccount());
+    this.renderAccount();
+    lb.init();
+  },
+
+  msg(text, ok = false) {
+    $("lb-msg").textContent = text;
+    $("lb-msg").classList.toggle("ok", ok);
+  },
+
+  async auth(kind) {
+    if (this.busy) return;
+    this.busy = true;
+    for (const id of ["lb-signin", "lb-signup"]) $(id).disabled = true;
+    this.msg(kind === "up" ? "Creating your account…" : "Signing in…", true);
+    try {
+      if (kind === "up") await lb.signUp($("lb-user").value, $("lb-pass").value);
+      else await lb.signIn($("lb-user").value, $("lb-pass").value);
+      $("lb-pass").value = "";
+      document.activeElement?.blur();
+      this.msg(kind === "up" ? "Account created - your best runs will now be saved." : "Signed in.", true);
+      this.load();
+    } catch (e) {
+      this.msg(e.message);
+    } finally {
+      this.busy = false;
+      for (const id of ["lb-signin", "lb-signup"]) $(id).disabled = false;
+    }
+  },
+
+  renderAccount() {
+    const u = lb.currentUser();
+    $("lb-form").hidden = Boolean(u);
+    $("lb-hint").hidden = Boolean(u);
+    $("lb-me").hidden = !u;
+    $("open-account").textContent = u ? `👤 ${u.username}` : "👤 Sign in";
+    if (u) {
+      $("lb-name").textContent = u.username;
+      const bests = lb.BOARDS.filter((b) => lb.myBest(b.id) !== null).map((b) => `${b.title} ${b.fmt(lb.myBest(b.id))}`);
+      $("lb-mybests").textContent = bests.length ? `Your bests: ${bests.join(" · ")}` : "No scores yet - go practice!";
+    }
+    // a new personal best may have changed the table
+    if (current === "board" && Date.now() - this.loadedAt > 2000) this.load();
+  },
+
+  show() { if (lb.configured()) this.load(); },
+
+  async load() {
+    if (!lb.configured()) return;
+    const b = lb.boardById(this.current);
+    for (const el of $("lb-boards").children) el.classList.toggle("active", el.dataset.board === b.id);
+    $("lb-how").textContent = b.how;
+    this.loadedAt = Date.now();
+    const rowsEl = $("lb-rows");
+    const cell = (text, cls) => {
+      const td = document.createElement("td");
+      td.textContent = text;
+      if (cls) td.className = cls;
+      return td;
+    };
+    try {
+      const rows = await lb.top(b.id);
+      if (this.current !== b.id) return;
+      const me = lb.currentUser();
+      if (!rows.length) {
+        const tr = document.createElement("tr");
+        const td = cell("No scores yet - be the first!", "empty");
+        td.colSpan = 4;
+        tr.append(td);
+        rowsEl.replaceChildren(tr);
+        return;
+      }
+      rowsEl.replaceChildren(...rows.map((r, i) => {
+        const tr = document.createElement("tr");
+        if (me && r.userId === me.id) tr.classList.add("me");
+        if (i === 0) tr.classList.add("top1");
+        tr.append(cell(i === 0 ? "👑" : String(i + 1)), cell(r.username), cell(`${b.fmt(r.value)} ${b.unit}`), cell(fmtWhen(r.at)));
+        return tr;
+      }));
+    } catch (e) {
+      const tr = document.createElement("tr");
+      const td = cell(e.message, "empty");
+      td.colSpan = 4;
+      tr.append(td);
+      rowsEl.replaceChildren(tr);
+    }
+  },
+};
+board.setup();
+
+// ---------------------------------------------------------------------------
 // Main loop: judge often, draw every display frame
 // ---------------------------------------------------------------------------
 setInterval(() => {
@@ -179,10 +311,10 @@ function frame() {
   const now = performance.now();
   if (current === "trainer") trainer.draw();
   else if (current === "rhythm") rhythm.draw(now);
-  else df.draw(now);
+  else if (current === "df") df.draw(now);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
 // for automated checks
-window.__ewgf = { app, trainer, rhythm, df, input, audio, settings };
+window.__ewgf = { app, trainer, rhythm, df, input, audio, settings, lb, board };

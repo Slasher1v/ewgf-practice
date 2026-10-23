@@ -25,6 +25,7 @@ export class RhythmTab {
     this.stats = { reps: 0, perfect: 0, great: 0, miss: 0, combo: 0, bestCombo: 0 };
     this.streak = 0;
     this.missStreak = 0;
+    this.realCombo = 0;      // combo counted only at Real speed (leaderboard)
     this.painter = new Painter($("r-grid"));
 
     const variant = $("r-variant");
@@ -58,6 +59,7 @@ export class RhythmTab {
     this.app.stopOthers("rhythm");
     this.active = true;
     this.prev = null;
+    this.realCombo = 0;
     $("r-start").textContent = "■ Stop";
     $("r-start").className = "btn gold right";
     this.setBig("Press →", C.BLUE);
@@ -146,6 +148,10 @@ export class RhythmTab {
     s[j.grade.toLowerCase()] += 1;
     if (j.grade === "MISS") { s.combo = 0; this.streak = 0; this.missStreak += 1; }
     else { s.combo += 1; s.bestCombo = Math.max(s.bestCombo, s.combo); this.streak += 1; this.missStreak = 0; }
+    if (j.grade !== "MISS" && rep.slow === 1) {
+      this.realCombo += 1;
+      this.app.report("rhythm_combo", this.realCombo);
+    } else this.realCombo = 0;
 
     let sound = { PERFECT: "electric", GREAT: "great", MISS: "drop" }[j.grade];
     let note = "";
