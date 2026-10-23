@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EWGF Practice</title>
+  <meta name="description" content="Free Tekken 8 Electric Wind God Fist trainer: frame-accurate EWGF practice, a rhythm game and a df+2 just-frame drill, right in your browser.">
+  <meta property="og:title" content="EWGF Practice">
+  <meta property="og:description" content="Frame-accurate Tekken 8 EWGF trainer in your browser - keyboard or controller.">
+  <meta property="og:image" content="icon.png">
+  <link rel="icon" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="icon.png" alt="" width="34" height="34">
+      <div>
+        <h1>EWGF Practice</h1>
+        <p>Tekken 8 Electric trainer · judged on 60 fps game frames</p>
+      </div>
+    </div>
+    <div class="top-right">
+      <span id="keyhint" class="keyhint"></span>
+      <button id="open-settings" class="btn ghost">⚙ Settings</button>
+    </div>
+  </header>
+
+  <div id="banner-sound" class="banner">🔈 Click anywhere or press a key to turn on sound</div>
+  <div id="banner-focus" class="banner warn" hidden>The page can't hear your keys right now - click here to keep practicing</div>
+  <div id="banner-mobile" class="banner" hidden>This trainer needs a keyboard or a controller.</div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="trainer" role="tab">EWGF Trainer</button>
+    <button class="tab" data-tab="rhythm" role="tab">Rhythm Game</button>
+    <button class="tab" data-tab="df" role="tab">df+2 Trainer</button>
+  </nav>
+
+  <main>
+    <!-- ===================== EWGF TRAINER ===================== -->
+    <section id="tab-trainer" class="tabpage">
+      <div class="hero">
+        <div id="t-title" class="big">Ready</div>
+        <div id="t-sub" class="sub">Do the EWGF: f, n, d, df+2</div>
+      </div>
+      <div id="lamps" class="lamps">
+        <span data-btn="b">←</span><span data-btn="d">↓</span><span data-btn="u">↑</span><span data-btn="f">→</span>
+        <span data-btn="1">1</span><span data-btn="2">2</span><span data-btn="3">3</span><span data-btn="4">4</span>
+      </div>
+
+      <div class="label">Input history <span>1 column = 1 game frame · circles = your goal</span></div>
+      <canvas id="t-hist" class="cv" style="height:206px"></canvas>
+
+      <table class="breakdown">
+        <thead><tr><th>Segment</th><th>raw ms</th><th>game frames</th></tr></thead>
+        <tbody>
+          <tr><td>f hold</td><td id="b-f-ms">-</td><td id="b-f-fr">-</td></tr>
+          <tr><td>n neutral</td><td id="b-n-ms">-</td><td id="b-n-fr">-</td></tr>
+          <tr><td>d hold</td><td id="b-d-ms">-</td><td id="b-d-fr">-</td></tr>
+          <tr class="strong"><td>Movement total</td><td id="b-mv-ms">-</td><td id="b-mv-fr">-</td></tr>
+          <tr class="strong"><td>Just frame (df → 2)</td><td id="b-jf-ms">-</td><td id="b-jf-fr">-</td></tr>
+        </tbody>
+      </table>
+
+      <div id="t-stats" class="stats"></div>
+      <div class="label">Last 10 attempts</div>
+      <ol id="t-log" class="log"></ol>
+
+      <div class="label">Audio trainer</div>
+      <div class="panel">
+        <div class="row">
+          <label>Target <select id="t-variant"></select></label>
+          <label><select id="t-speed"></select></label>
+          <button id="t-guide" class="btn primary">▶ Play rhythm</button>
+        </div>
+        <div class="row">
+          <button id="t-go-rhythm" class="btn gold">🎵 Go to Rhythm Game</button>
+          <span class="muted small">Reps start on your f - slowed down or real speed</span>
+        </div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="t-tones"> Input tones</label>
+          <label class="check"><input type="checkbox" id="t-results"> Result sounds</label>
+          <label class="vol">Volume <input type="range" id="t-volume" min="0" max="100"></label>
+          <button id="t-reset" class="btn ghost right">Reset stats</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RHYTHM GAME ===================== -->
+    <section id="tab-rhythm" class="tabpage" hidden>
+      <div class="panel">
+        <div class="row">
+          <label>Target <select id="r-variant"></select></label>
+          <label>Speed <select id="r-speed"></select></label>
+          <button id="r-start" class="btn primary right">▶ Start</button>
+        </div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="r-dtone" checked> d tone</label>
+          <label class="check"><input type="checkbox" id="r-auto" checked> Auto speed-up</label>
+          <span class="muted small right" id="r-latency"></span>
+        </div>
+      </div>
+      <div class="label">Timing at this speed <span>game frames from your f</span></div>
+      <div id="r-timing" class="mono timing"></div>
+
+      <div class="hero">
+        <div id="r-big" class="big">Press Start</div>
+        <div id="r-sub" class="sub">Then press → whenever you're ready</div>
+        <div id="r-detail" class="detail"></div>
+        <div id="r-math" class="mathline"></div>
+      </div>
+      <canvas id="r-grid" class="cv" style="height:236px"></canvas>
+      <div id="r-stats" class="stats"></div>
+      <ol id="r-log" class="log"></ol>
+    </section>
+
+    <!-- ===================== DF+2 TRAINER ===================== -->
+    <section id="tab-df" class="tabpage" hidden>
+      <div class="panel">
+        <div class="row">
+          <label>Cue gap <select id="d-gap"></select></label>
+          <label>Start level <input type="number" id="d-level" min="1" max="20" value="10"></label>
+          <button id="d-start" class="btn primary right">▶ Start</button>
+        </div>
+        <div class="row">
+          <label>BPM <input type="number" id="d-bpm" min="60" max="200" step="5" value="100"></label>
+          <label>Hits per level <input type="number" id="d-hits" min="1" max="10" value="1"></label>
+          <label class="check"><input type="checkbox" id="d-strict"> Must hit the cue</label>
+        </div>
+      </div>
+      <p id="d-help" class="help"></p>
+      <canvas id="d-ladder" class="cv" style="height:60px;background:transparent"></canvas>
+      <div class="hero">
+        <div id="d-big" class="big">Press Start</div>
+        <div id="d-sub" class="sub"></div>
+        <div id="d-detail" class="detail"></div>
+        <div id="d-math" class="mathline"></div>
+      </div>
+      <canvas id="d-grid" class="cv" style="height:200px"></canvas>
+      <div id="d-stats" class="stats"></div>
+      <ol id="d-log" class="log"></ol>
+    </section>
+  </main>
+
+  <footer>
+    Runs entirely in your browser - nothing is uploaded. Timing windows for the motion are estimates;
+    the df+2 just frame is exact. Not affiliated with Bandai Namco.
+  </footer>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <dialog id="settings">
+    <form method="dialog" class="settings">
+      <h2>Settings</h2>
+
+      <h3>Keyboard</h3>
+      <p class="muted small">Click a key, then press the new one (Esc cancels).</p>
+      <div id="s-keys" class="bindgrid"></div>
+
+      <h3>Controller</h3>
+      <p class="muted small">D-pad or left stick for directions. Click a button, then press it on your controller.
+        <span id="s-pad-state"></span></p>
+      <div id="s-pad" class="bindgrid"></div>
+
+      <h3>Gameplay</h3>
+      <label class="check"><input type="checkbox" id="s-side"> I'm on the 2P side (forward is left)</label>
+      <label>Left + right together <select id="s-socd">
+        <option value="neutral">cancel out (neutral)</option>
+        <option value="last">last pressed wins</option>
+      </select></label>
+
+      <h3>Sound</h3>
+      <label class="vol">Volume <input type="range" id="s-volume" min="0" max="100"></label>
+      <label class="check"><input type="checkbox" id="s-tones"> Tones for your own f / d / df inputs</label>
+      <label class="check"><input type="checkbox" id="s-results"> Result sounds</label>
+      <label>Audio offset <input type="number" id="s-offset" min="-100" max="300" step="5"> ms
+        <span class="muted small">raise it if the tones feel late (Bluetooth headphones)</span></label>
+
+      <div class="row end">
+        <button type="button" id="s-reset" class="btn ghost">Reset to defaults</button>
+        <button class="btn primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

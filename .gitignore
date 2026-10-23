@@ -1,0 +1,9 @@
+# build output and local tooling
+build/
+__pycache__/
+.claude/
+*.spec
+
+# large binaries - share these as a GitHub Release instead
+EWGF Practice.exe
+EWGF Practice.zip
