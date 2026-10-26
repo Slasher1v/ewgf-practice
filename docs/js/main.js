@@ -1,12 +1,12 @@
 // Wires the three tabs, settings, sound and the main loop together.
 
-import { FRAME_MS, settings, saveSettings, resetSettings, keyName, padName, ATTACKS } from "./config.js?v=20261023214640";
-import * as audio from "./audio.js?v=20261023214640";
-import * as input from "./input.js?v=20261023214640";
-import { TrainerTab } from "./trainer.js?v=20261023214640";
-import { RhythmTab } from "./rhythm.js?v=20261023214640";
-import { DFTab } from "./dfgame.js?v=20261023214640";
-import * as lb from "./leaderboard.js?v=20261023214640";
+import { FRAME_MS, settings, saveSettings, resetSettings, keyName, padName, ATTACKS } from "./config.js?v=20261026141408";
+import * as audio from "./audio.js?v=20261026141408";
+import * as input from "./input.js?v=20261026141408";
+import { TrainerTab } from "./trainer.js?v=20261026141408";
+import { RhythmTab } from "./rhythm.js?v=20261026141408";
+import { DFTab } from "./dfgame.js?v=20261026141408";
+import * as lb from "./leaderboard.js?v=20261026141408";
 
 const $ = (id) => document.getElementById(id);
 

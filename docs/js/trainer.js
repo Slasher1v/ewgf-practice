@@ -3,10 +3,10 @@
 import {
   FRAME_MS, FRAME_GRACE_MS, HISTORY_SIZE, CHIME_MAX_SPEED, C, L, ARROWS, DIR_COLORS,
   VARIANTS, SPEEDS, settings, saveSettings, variantById, targetSpeed,
-} from "./config.js?v=20261023214640";
-import { FrameSampler, EWGFDetector } from "./engine.js?v=20261023214640";
-import { Painter, renderChips } from "./draw.js?v=20261023214640";
-import * as audio from "./audio.js?v=20261023214640";
+} from "./config.js?v=20261026141408";
+import { FrameSampler, EWGFDetector } from "./engine.js?v=20261026141408";
+import { Painter, renderChips } from "./draw.js?v=20261026141408";
+import * as audio from "./audio.js?v=20261026141408";
 
 const $ = (id) => document.getElementById(id);
 

@@ -5,7 +5,7 @@
 import {
   FRAME_MS, EWGF_BASE_STARTUP, MAX_NEUTRAL_FRAMES, MAX_DOWN_FRAMES, WGF_LATE_WINDOW,
   FAIL_LOG_WINDOW, RHYTHM_PERFECT, DF_BEAT_TOL_MS, settings,
-} from "./config.js?v=20261023214640";
+} from "./config.js?v=20261026141408";
 
 // ---------------------------------------------------------------------------
 // Frame sampler: raw key events -> one input state per frame
@@ -335,7 +335,9 @@ export function judgeRep(raw, results, detector, T0, beat, fms, events, target, 
   if (clean && tF !== null && tDf !== null) {
     math = timingSummary(realIdx(tDf) - realIdx(tF), (target - EWGF_BASE_STARTUP) * slow, slow, res.movement);
   }
-  return { grade, reason, result: res, startMs, errors, jf, jfMs, math };
+  // Real game frames from f to df+2 (not stretched by the slow-down)
+  const dfFrames = tF !== null && tDf !== null ? realIdx(tDf) - realIdx(tF) : null;
+  return { grade, reason, result: res, startMs, errors, jf, jfMs, math, dfFrames };
 }
 
 // ---------------------------------------------------------------------------

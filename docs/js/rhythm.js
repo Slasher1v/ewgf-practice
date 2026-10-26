@@ -4,10 +4,10 @@
 
 import {
   FRAME_MS, FRAME_GRACE_MS, EWGF_BASE_STARTUP, C, L, VARIANTS, RHYTHM_SPEED_ORDER, RHYTHM_HISTORY, settings, saveSettings, speedLabel, variantById,
-} from "./config.js?v=20261023214640";
-import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261023214640";
-import { Painter, renderChips } from "./draw.js?v=20261023214640";
-import * as audio from "./audio.js?v=20261023214640";
+} from "./config.js?v=20261026141408";
+import { FrameSampler, EWGFDetector, judgeRep, realGridOrigin, slowedTiming, plural } from "./engine.js?v=20261026141408";
+import { Painter, renderChips } from "./draw.js?v=20261026141408";
+import * as audio from "./audio.js?v=20261026141408";
 
 const $ = (id) => document.getElementById(id);
 const GRADE_COLORS = { PERFECT: C.GOLD, GREAT: C.GREEN, MISS: C.RED };
@@ -153,8 +153,13 @@ export class RhythmTab {
     if (settings.resultSounds) audio.play(sound);
 
     this.setBig(j.grade, GRADE_COLORS[j.grade]);
-    $("r-frames").textContent = j.result && j.result.electric ? `i${j.result.speed} Electric` : "";
-    this.setSub(j.reason);
+    // Count the real game frames you took, f to df+2: at 2x slower an i13
+    // rhythm really lands as i15 in game frames.
+    const realI = j.dfFrames !== null ? j.dfFrames + EWGF_BASE_STARTUP : null;
+    const goalI = (rep.target - EWGF_BASE_STARTUP) * rep.slow + EWGF_BASE_STARTUP;
+    $("r-frames").textContent = j.grade !== "MISS" && realI !== null ? `i${realI} Electric` : "";
+    this.setSub(j.grade !== "MISS" && realI !== null ? (realI === goalI ? `Right on the goal (i${goalI} at this speed)`
+      : `Goal at this speed: i${goalI} · you were ${plural(Math.abs(realI - goalI))} ${realI > goalI ? "slower" : "faster"}`) : j.reason);
     $("r-detail").textContent = RhythmTab.detailText(j);
     $("r-math").textContent = j.math ? j.math.join("\n") : "";
     this.updateStats();
